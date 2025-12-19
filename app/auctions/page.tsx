@@ -30,7 +30,7 @@ export default function AuctionsPage() {
     setAuctions(prev => prev.map(auc => {
       if (auc.id === id) {
         if (amount < auc.currentBid + auc.minIncrement) {
-          alert(`Minimum bid is $${auc.currentBid + auc.minIncrement}`);
+          alert(`Minimum bid is R{auc.currentBid + auc.minIncrement}`);
           return auc;
         }
         return {
@@ -55,7 +55,7 @@ export default function AuctionsPage() {
           <div key={auction.id} className="grid grid-cols-1 lg:grid-cols-12 gap-1 bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden">
             <div className="lg:col-span-5 h-80 lg:h-auto relative">
               <img src={auction.image} className="w-full h-full object-cover" alt={auction.name} />
-              <div className={`absolute top-6 left-6 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${auction.status === 'LIVE' ? 'bg-emerald-500 text-zinc-950' : 'bg-zinc-800 text-zinc-400'}`}>
+              <div className={`absolute top-6 left-6 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${auction.status === 'LIVE' ? 'bg-blue-900 text-zinc-950' : 'bg-zinc-800 text-zinc-400'}`}>
                 {auction.status === 'LIVE' && <span className="w-1.5 h-1.5 rounded-full bg-zinc-950 animate-pulse"></span>}
                 {auction.status}
               </div>
@@ -69,19 +69,19 @@ export default function AuctionsPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
                   <div className="p-4 rounded-2xl bg-zinc-950/50 border border-zinc-800">
                     <span className="block text-[10px] text-zinc-500 uppercase font-bold mb-1">Current High Bid</span>
-                    <span className="text-2xl font-black text-emerald-500">${auction.currentBid}</span>
+                    <span className="text-2xl font-black text-blue-900">R{auction.currentBid}</span>
                   </div>
                   <div className="p-4 rounded-2xl bg-zinc-950/50 border border-zinc-800">
                     <span className="block text-[10px] text-zinc-500 uppercase font-bold mb-1">Min. Increment</span>
-                    <span className="text-2xl font-black text-zinc-200">${auction.minIncrement}</span>
+                    <span className="text-2xl font-black text-zinc-200">R{auction.minIncrement}</span>
                   </div>
                   <div className="p-4 rounded-2xl bg-zinc-950/50 border border-zinc-800">
                     <span className="block text-[10px] text-zinc-500 uppercase font-bold mb-1">Bidders</span>
                     <span className="text-2xl font-black text-zinc-200">{auction.bidHistory.length}</span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-                    <span className="block text-[10px] text-emerald-500 uppercase font-bold mb-1">Ends In</span>
-                    <span className="text-2xl font-black text-emerald-500 italic font-mono">02:30:11</span>
+                  <div className="p-4 rounded-2xl bg-blue-900/10 border border-blue-900/20">
+                    <span className="block text-[10px] text-blue-900 uppercase font-bold mb-1">Ends In</span>
+                    <span className="text-2xl font-black text-blue-900 italic font-mono">02:30:11</span>
                   </div>
                 </div>
               </div>
@@ -90,8 +90,8 @@ export default function AuctionsPage() {
                 <div className="flex flex-col md:flex-row gap-4">
                   <input 
                     type="number" 
-                    placeholder={`Min. $${auction.currentBid + auction.minIncrement}`}
-                    className="flex-grow bg-zinc-950 border border-zinc-700 rounded-xl px-6 py-4 focus:outline-none focus:border-emerald-500 font-bold"
+                    placeholder={`Min. R${auction.currentBid + auction.minIncrement}`}
+                    className="flex-grow bg-zinc-950 border border-zinc-700 rounded-xl px-6 py-4 focus:outline-none focus:border-blue-900 font-bold"
                     id={`bid-input-${auction.id}`}
                   />
                   <button 
@@ -99,7 +99,7 @@ export default function AuctionsPage() {
                       const input = document.getElementById(`bid-input-${auction.id}`) as HTMLInputElement;
                       handlePlaceBid(auction.id, Number(input.value));
                     }}
-                    className="px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-black rounded-xl transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-10 py-4 bg-blue-900 hover:bg-blue-950 text-zinc-950 font-black rounded-xl transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!user}
                   >
                     Place Bid
@@ -138,7 +138,7 @@ export default function AuctionsPage() {
               {auctions[0].bidHistory.map((bid, i) => (
                 <tr key={i} className="hover:bg-zinc-800/30 transition-colors">
                   <td className="px-6 py-4 font-bold text-sm">{bid.user}</td>
-                  <td className="px-6 py-4 font-bold text-sm text-emerald-500">${bid.amount}</td>
+                  <td className="px-6 py-4 font-bold text-sm text-blue-900">R{bid.amount}</td>
                   <td className="px-6 py-4 text-xs text-zinc-500">{new Date(bid.time).toLocaleTimeString()}</td>
                 </tr>
               ))}

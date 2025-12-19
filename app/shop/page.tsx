@@ -34,14 +34,14 @@ export default function ShopPage() {
             placeholder="Search items..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-grow md:w-64 bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 focus:outline-none focus:border-emerald-500"
+            className="flex-grow md:w-64 bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-900"
           />
           <div className="flex bg-zinc-900 p-1 rounded-lg border border-zinc-800">
             {(['ALL', ProductType.BIKE, ProductType.PART, ProductType.ACCESSORY] as const).map(type => (
               <button
                 key={type}
                 onClick={() => setFilter(type)}
-                className={`px-4 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all ${filter === type ? 'bg-emerald-600 text-zinc-950' : 'text-zinc-400 hover:text-white'}`}
+                className={`px-4 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all ${filter === type ? 'bg-blue-900 text-zinc-950' : 'text-zinc-400 hover:text-white'}`}
               >
                 {type}
               </button>
@@ -52,7 +52,7 @@ export default function ShopPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {filtered.map(product => (
-          <div key={product.id} className={`group relative bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 transition-all ${product.isSold ? 'opacity-75 grayscale' : 'hover:border-emerald-500/50 hover:-translate-y-1'}`}>
+          <div key={product.id} className={`group relative bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 transition-all ${product.isSold ? 'opacity-75 grayscale' : 'hover:border-blue-900/50 hover:-translate-y-1'}`}>
             {product.isSold && (
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-950/40 pointer-events-none">
                 <span className="bg-red-500 text-white font-black text-2xl uppercase tracking-widest py-2 px-8 -rotate-12 border-4 border-white shadow-xl">
@@ -64,7 +64,7 @@ export default function ShopPage() {
             <div className="h-56 relative overflow-hidden">
               <img src={product.image} className="w-full h-full object-cover" alt={product.name} />
               {product.isSpecial && (
-                <div className="absolute top-4 left-4 bg-emerald-500 text-zinc-950 px-2 py-0.5 rounded text-[10px] font-black uppercase">
+                <div className="absolute top-4 left-4 bg-blue-900 text-zinc-950 px-2 py-0.5 rounded text-[10px] font-black uppercase">
                   Special Offer
                 </div>
               )}
@@ -77,17 +77,17 @@ export default function ShopPage() {
                 <div>
                   {product.discount ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-zinc-500 line-through text-sm">${product.price}</span>
-                      <span className="text-emerald-500 font-bold text-xl">${(product.price * (1 - product.discount/100)).toFixed(0)}</span>
+                      <span className="text-zinc-500 line-through text-sm">R{product.price}</span>
+                      <span className="text-blue-900 font-bold text-xl">R{(product.price * (1 - product.discount/100)).toFixed(0)}</span>
                     </div>
                   ) : (
-                    <span className="text-emerald-500 font-bold text-xl">${product.price}</span>
+                    <span className="text-blue-900 font-bold text-xl">R{product.price}</span>
                   )}
                 </div>
                 {!product.isSold && (
                   <button 
                     onClick={() => addItem(product)}
-                    className="p-3 rounded-xl bg-zinc-800 hover:bg-emerald-600 transition-colors group/btn"
+                    className="p-3 rounded-xl bg-zinc-800 hover:bg-blue-950 transition-colors group/btn"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-zinc-300 group-hover/btn:text-zinc-950" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

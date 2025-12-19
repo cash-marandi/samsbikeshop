@@ -20,30 +20,30 @@ export default function RentalsPage() {
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="text-emerald-500 text-xs font-bold uppercase tracking-widest">{bike.type}</span>
+                    <span className="text-blue-900 text-xs font-bold uppercase tracking-widest">{bike.type}</span>
                     <h3 className="text-2xl font-black mt-1">{bike.name}</h3>
                   </div>
                   <div className="text-right">
                     <span className="block text-zinc-500 text-[10px] uppercase font-bold">Daily Rate</span>
-                    <span className="text-2xl font-black text-white">${bike.pricePerDay}</span>
+                    <span className="text-2xl font-black text-white">R{bike.pricePerDay}</span>
                   </div>
                 </div>
                 <ul className="space-y-2 text-sm text-zinc-400 mb-8">
                   <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
+                    <svg className="w-4 h-4 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
                     Inspected & Cleaned
                   </li>
                   <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
+                    <svg className="w-4 h-4 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
                     Helmet Included
                   </li>
                   <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
+                    <svg className="w-4 h-4 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
                     Emergency Road Kit
                   </li>
                 </ul>
               </div>
-              <button className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-bold rounded-xl transition-all uppercase tracking-widest text-sm">
+              <button className="w-full py-4 bg-blue-900 hover:bg-blue-950 text-zinc-950 font-bold rounded-xl transition-all uppercase tracking-widest text-sm">
                 Check Availability
               </button>
             </div>
@@ -59,7 +59,7 @@ export default function RentalsPage() {
         <p className="text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
           Planning a charity ride or corporate event? We offer specialized packages for groups of 5 or more with delivery options directly to your trail-head.
         </p>
-        <button className="px-10 py-4 border border-zinc-700 hover:border-emerald-500 hover:text-emerald-500 transition-all rounded-xl font-bold">
+        <button className="px-10 py-4 border border-zinc-700 hover:border-blue-950 hover:text-blue-950 transition-all rounded-xl font-bold">
           Get a Custom Quote
         </button>
       </div>

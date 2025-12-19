@@ -34,7 +34,7 @@ export default function AdminDashboardPage() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as any)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${activeTab === item.id ? 'bg-emerald-600/10 text-emerald-500' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${activeTab === item.id ? 'bg-blue-900/10 text-blue-900' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
               >
                 <span>{item.icon}</span>
                 {item.label}
@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
         </div>
         <div className="mt-auto p-6 border-t border-zinc-800">
            <div className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-zinc-950">S</div>
+             <div className="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center font-bold text-zinc-950">S</div>
              <div className="flex flex-col">
                <span className="text-xs font-bold">Sam Admin</span>
                <span className="text-[10px] text-zinc-500 uppercase tracking-tighter">Verified Owner</span>
@@ -75,7 +75,7 @@ const StatsOverview = () => (
         <div key={stat.label} className="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
           <div className="flex justify-between items-start mb-4">
             <span className="text-2xl">{stat.icon}</span>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${stat.trend.startsWith('+') ? 'bg-emerald-500/10 text-emerald-500' : 'bg-zinc-800 text-zinc-500'}`}>{stat.trend}</span>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${stat.trend.startsWith('+') ? 'bg-blue-900/10 text-blue-900' : 'bg-zinc-800 text-zinc-500'}`}>{stat.trend}</span>
           </div>
           <span className="block text-zinc-500 text-xs font-bold uppercase tracking-widest mb-1">{stat.label}</span>
           <span className="text-3xl font-black">{stat.value}</span>
@@ -97,7 +97,7 @@ const InventoryManagement = () => (
   <div>
     <div className="flex justify-between items-center mb-10">
       <h2 className="text-2xl font-black uppercase tracking-tighter">Product Inventory</h2>
-      <button className="bg-emerald-600 text-zinc-950 px-6 py-2 rounded-lg font-bold text-sm uppercase tracking-widest hover:bg-emerald-500">
+      <button className="bg-blue-900 text-zinc-950 px-6 py-2 rounded-lg font-bold text-sm uppercase tracking-widest hover:bg-blue-900">
         + Add New Product
       </button>
     </div>
@@ -117,9 +117,9 @@ const InventoryManagement = () => (
             <tr key={product.id} className="hover:bg-zinc-800/20 transition-colors">
               <td className="px-6 py-4 font-bold text-sm">{product.name}</td>
               <td className="px-6 py-4 text-xs text-zinc-400 font-mono">{product.type}</td>
-              <td className="px-6 py-4 font-bold text-emerald-500">${product.price}</td>
+              <td className="px-6 py-4 font-bold text-blue-900">${product.price}</td>
               <td className="px-6 py-4">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter ${product.isSold ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter ${product.isSold ? 'bg-red-500/10 text-red-500' : 'bg-blue-900/10 text-blue-900'}`}>
                   {product.isSold ? 'SOLD' : 'AVAILABLE'}
                 </span>
               </td>
@@ -139,7 +139,7 @@ const AuctionManagement = () => (
   <div>
     <div className="flex justify-between items-center mb-10">
       <h2 className="text-2xl font-black uppercase tracking-tighter">Live Auctions</h2>
-      <button className="bg-emerald-600 text-zinc-950 px-6 py-2 rounded-lg font-bold text-sm uppercase tracking-widest hover:bg-emerald-500">
+      <button className="bg-blue-900 text-zinc-950 px-6 py-2 rounded-lg font-bold text-sm uppercase tracking-widest hover:bg-blue-900">
         + Create Auction
       </button>
     </div>
@@ -148,7 +148,7 @@ const AuctionManagement = () => (
         <div key={auc.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
           <div className="flex justify-between items-center mb-4">
              <h3 className="font-bold">{auc.name}</h3>
-             <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${auc.status === 'LIVE' ? 'bg-emerald-500 text-zinc-950' : 'bg-zinc-800 text-zinc-500'}`}>{auc.status}</span>
+             <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${auc.status === 'LIVE' ? 'bg-blue-900 text-zinc-950' : 'bg-zinc-800 text-zinc-500'}`}>{auc.status}</span>
           </div>
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -197,8 +197,8 @@ const UserManagement = () => (
               </td>
               <td className="px-6 py-4">
                 {user.isApprovedForAuction ? (
-                  <span className="flex items-center gap-1.5 text-emerald-500 text-xs font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Approved
+                  <span className="flex items-center gap-1.5 text-blue-900 text-xs font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-900"></span> Approved
                   </span>
                 ) : (
                   <span className="flex items-center gap-1.5 text-yellow-500 text-xs font-bold">
@@ -208,7 +208,7 @@ const UserManagement = () => (
               </td>
               <td className="px-6 py-4 text-right">
                 {!user.isApprovedForAuction && (
-                  <button className="bg-emerald-600/10 text-emerald-500 px-3 py-1 rounded text-[10px] font-bold uppercase hover:bg-emerald-600 hover:text-zinc-950 transition-all">
+                  <button className="bg-blue-900/10 text-blue-900 px-3 py-1 rounded text-[10px] font-bold uppercase hover:bg-blue-900 hover:text-zinc-950 transition-all">
                     Approve for Auction
                   </button>
                 )}
@@ -225,7 +225,7 @@ const NewsManagement = () => (
   <div>
     <div className="flex justify-between items-center mb-10">
       <h2 className="text-2xl font-black uppercase tracking-tighter">Blog & News Management</h2>
-      <button className="bg-emerald-600 text-zinc-950 px-6 py-2 rounded-lg font-bold text-sm uppercase tracking-widest hover:bg-emerald-500">
+      <button className="bg-blue-900 text-zinc-950 px-6 py-2 rounded-lg font-bold text-sm uppercase tracking-widest hover:bg-blue-900">
         + Write New Post
       </button>
     </div>
@@ -240,7 +240,7 @@ const NewsManagement = () => (
             <span className="text-xs text-zinc-500">{post.date} • By {post.author}</span>
           </div>
           <div className="flex gap-2">
-            <button className="p-2 hover:text-emerald-500 transition-colors">Edit</button>
+            <button className="p-2 hover:text-blue-900 transition-colors">Edit</button>
             <button className="p-2 hover:text-red-500 transition-colors">Remove</button>
           </div>
         </div>

@@ -9,7 +9,7 @@ export default function AboutPage() {
           <div className="max-w-3xl">
             <h1 className="text-7xl font-black uppercase tracking-tighter mb-8 italic">
               WE LIVE <br />
-              <span className="text-emerald-500">AND BREATHE</span> <br />
+              <span className="text-blue-900">AND BREATHE</span> <br />
               CYCLING.
             </h1>
             <p className="text-xl text-zinc-400 leading-relaxed">
@@ -32,19 +32,19 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <h4 className="text-emerald-500 font-black uppercase text-xs tracking-widest mb-2">Expertise</h4>
+              <h4 className="text-blue-900 font-black uppercase text-xs tracking-widest mb-2">Expertise</h4>
               <p className="text-zinc-300 text-sm">UCI Certified mechanics on-site for all performance builds.</p>
             </div>
             <div>
-              <h4 className="text-emerald-500 font-black uppercase text-xs tracking-widest mb-2">Quality</h4>
+              <h4 className="text-blue-900 font-black uppercase text-xs tracking-widest mb-2">Quality</h4>
               <p className="text-zinc-300 text-sm">Only the finest components from global leaders like Shimano and SRAM.</p>
             </div>
             <div>
-              <h4 className="text-emerald-500 font-black uppercase text-xs tracking-widest mb-2">Community</h4>
+              <h4 className="text-blue-900 font-black uppercase text-xs tracking-widest mb-2">Community</h4>
               <p className="text-zinc-300 text-sm">Proud sponsors of regional youth racing and trail conservation.</p>
             </div>
             <div>
-              <h4 className="text-emerald-500 font-black uppercase text-xs tracking-widest mb-2">Heritage</h4>
+              <h4 className="text-blue-900 font-black uppercase text-xs tracking-widest mb-2">Heritage</h4>
               <p className="text-zinc-300 text-sm">25+ years of mechanical wisdom passed down through generations.</p>
             </div>
           </div>

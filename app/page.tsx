@@ -21,18 +21,18 @@ export default function HomePage() {
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <span className="inline-block py-1 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-widest mb-6">
+            <span className="inline-block py-1 px-3 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-900 text-xs font-bold uppercase tracking-widest mb-6">
               Official Dealer & Service Center
             </span>
             <h1 className="text-6xl md:text-8xl font-black text-white leading-none mb-6 tracking-tighter">
               BORN TO <br />
-              <span className="text-emerald-500">RIDE.</span>
+              <span className="text-blue-900">RIDE.</span>
             </h1>
             <p className="text-xl text-zinc-400 mb-10 max-w-lg leading-relaxed">
               Premium cycles, expert repairs, and real-time auctions. Your ultimate cycling destination since 1998.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href="#shop" className="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-bold rounded-lg transition-all transform hover:-translate-y-1">
+              <a href="#shop" className="px-8 py-4 bg-blue-900 hover:bg-blue-800 text-zinc-950 font-bold rounded-lg transition-all transform hover:-translate-y-1">
                 Shop Inventory
               </a>
               <a href="#auctions" className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-lg transition-all border border-zinc-700">
@@ -50,7 +50,7 @@ export default function HomePage() {
           { title: 'Repairs', desc: 'Certified master technicians.', icon: '🔧', href: '#repairs' },
           { title: 'Auctions', desc: 'Rare gear at the best prices.', icon: '⏱️', href: '#auctions' },
         ].map((item) => (
-          <a key={item.title} href={item.href} className="group p-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 transition-all">
+          <a key={item.title} href={item.href} className="group p-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-blue-900/50 transition-all">
             <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{item.icon}</div>
             <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
             <p className="text-zinc-500">{item.desc}</p>
@@ -63,9 +63,9 @@ export default function HomePage() {
         <div className="flex justify-between items-end mb-12">
           <div>
             <h2 className="text-3xl font-black uppercase tracking-tighter mb-2">New Arrivals</h2>
-            <div className="h-1 w-20 bg-emerald-500"></div>
+            <div className="h-1 w-20 bg-blue-900"></div>
           </div>
-          <a href="#shop" className="text-emerald-500 font-bold hover:underline">View All Shop &rarr;</a>
+          <a href="#shop" className="text-blue-900 hover:underline">View All Shop &rarr;</a>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {featured.map((product) => (
@@ -79,10 +79,10 @@ export default function HomePage() {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-lg">{product.name}</h3>
-                  <span className="text-emerald-500 font-bold">${product.price}</span>
+                  <span className="text-blue-900">R{product.price}</span>
                 </div>
                 <p className="text-zinc-500 text-sm mb-6">{product.description}</p>
-                <a href="#shop" className="block w-full text-center py-3 bg-zinc-800 hover:bg-emerald-600 hover:text-zinc-950 transition-colors rounded-lg font-bold text-sm uppercase">Details</a>
+                <a href="#shop" className="block w-full text-center py-3 bg-zinc-800 hover:bg-blue-950 hover:text-zinc-950 transition-colors rounded-lg font-bold text-sm uppercase">Details</a>
               </div>
             </div>
           ))}
@@ -92,7 +92,7 @@ export default function HomePage() {
       {/* Live Auction Preview */}
       {liveAuction && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-emerald-600 rounded-3xl p-1 md:p-12 overflow-hidden relative">
+          <div className="bg-blue-900 rounded-3xl p-1 md:p-12 overflow-hidden relative">
             <div className="absolute top-0 right-0 p-8 opacity-10">
                <svg className="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm1 12v-4h-2v4h2zm0 4v-2h-2v2h2z"/></svg>
             </div>
@@ -108,7 +108,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-8 mb-10">
                   <div>
                     <span className="block text-zinc-950/60 uppercase text-[10px] font-bold">Current Bid</span>
-                    <span className="text-3xl font-black text-zinc-950">${liveAuction.currentBid}</span>
+                    <span className="text-3xl font-black text-zinc-950">R{liveAuction.currentBid}</span>
                   </div>
                   <div>
                     <span className="block text-zinc-950/60 uppercase text-[10px] font-bold">Ends In</span>

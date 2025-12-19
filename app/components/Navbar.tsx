@@ -36,7 +36,7 @@ export const Navbar: React.FC = () => {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="px-3 py-2 rounded-md text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-zinc-300 hover:text-blue-950 transition-colors"
                 >
                   {link.name}
                 </Link>
@@ -50,7 +50,7 @@ export const Navbar: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {items.length > 0 && (
-                <span className="absolute top-0 right-0 bg-emerald-500 text-zinc-950 text-xs font-bold px-1.5 py-0.5 rounded-full">
+                <span className="absolute top-0 right-0 bg-blue-900 text-zinc-950 text-xs font-bold px-1.5 py-0.5 rounded-full">
                   {items.length}
                 </span>
               )}
@@ -58,7 +58,7 @@ export const Navbar: React.FC = () => {
             
             {user ? (
               <div className="flex items-center space-x-4">
-                <Link href={user.role === 'ADMIN' ? '/admin-dashboard' : '/user-profile'} className="text-sm font-medium text-emerald-500">
+                <Link href={user.role === 'ADMIN' ? '/admin-dashboard' : '/user-profile'} className="text-blue-900">
                   {user.name}
                 </Link>
                 <button onClick={logout} className="text-xs text-zinc-500 hover:text-zinc-300 uppercase tracking-widest">
@@ -66,7 +66,7 @@ export const Navbar: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <Link href="/user-profile" className="bg-emerald-600 hover:bg-emerald-500 text-zinc-950 px-4 py-2 rounded-full font-bold text-sm transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+              <Link href="/user-profile" className="bg-blue-900 hover:bg-blue-950 text-zinc-950 px-4 py-2 rounded-full font-bold text-sm transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                 Login
               </Link>
             )}
@@ -92,7 +92,7 @@ export const Navbar: React.FC = () => {
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="block px-3 py-2 rounded-md text-base font-medium text-zinc-300 hover:text-emerald-400"
+                className="block px-3 py-2 rounded-md text-base font-medium text-zinc-300 hover:text-blue-950"
               >
                 {link.name}
               </Link>
