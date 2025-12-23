@@ -97,14 +97,20 @@ export default function AuctionsPage() {
     // Connect to the Socket.IO server. Adjust URL if your server is elsewhere.
     // For Next.js API routes, you might need a separate Socket.IO server or adapter.
     // Assuming a simple setup where client connects to the same origin.
-    const socket = io('http://localhost:3001'); // Connects to the Socket.IO server on port 3001
+    const socketUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_SOCKET_IO_URL!
+      : 'http://localhost:3001';
+    const socket = io(socketUrl);
 
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
-      // After connecting, join rooms for currently displayed auctions
       auctions.forEach(auction => {
         socket.emit('joinAuctionRoom', auction.id);
       });
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('Socket.IO connection error:', err);
     });
 
     socket.on('bidUpdated', (updatedAuction: Auction) => {
@@ -131,10 +137,6 @@ export default function AuctionsPage() {
 
     socket.on('disconnect', () => {
       console.log('Disconnected from Socket.IO server');
-    });
-
-    socket.on('connect_error', (err) => {
-      console.error('Socket.IO connection error:', err);
     });
 
     // Cleanup function

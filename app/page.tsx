@@ -42,15 +42,7 @@ export default function HomePage() {
         }));
         setAuctions(newAuctions);
         setNewsPosts(newsData);
-
-        console.log('Fetched Auctions (detailed):', newAuctions.map((a: Auction) => ({
-          id: a.id,
-          name: a.name,
-          startTime: a.startTime,
-          endTime: a.endTime,
-          status: getAuctionStatus(a.startTime, a.endTime),
-          now: Date.now(), // Add current time for comparison
-        }))); // Debug log
+        setProducts(productsData);
 
       } catch (err: any) {
         console.error('Error fetching data:', err);

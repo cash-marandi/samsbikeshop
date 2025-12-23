@@ -51,7 +51,8 @@ export const Footer: React.FC = () => {
           </div>
         </div>
         <div className="mt-16 border-t border-zinc-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-zinc-600">
-          <p>&copy; 2024 Sams Bike Shop. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Sams Bike Shop. All rights reserved.</p>
+          <p className="text-zinc-600 text-xs">Built by <a href="https://www.livelonke.co.za" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Live Lonke ICT</a></p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
             <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>

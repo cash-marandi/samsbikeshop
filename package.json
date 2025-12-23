@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev --webpack\" \"node server.js\"",
+    "dev": "concurrently \"cross-env NODE_OPTIONS=--dns-result-order=ipv4first next dev --webpack\" \"node server.js\"",
     "build": "next build --webpack",
     "start": "NODE_ENV=production node server.js",
     "lint": "eslint",
@@ -39,6 +39,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "concurrently": "^8.2.2",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
     "jest": "^30.2.0",

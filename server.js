@@ -8,9 +8,13 @@ const NEXTJS_PORT = process.env.PORT || 3000; // Next.js app will run on this po
 
 const expressApp = express();
 const server = http.createServer(expressApp);
+const NEXTJS_URL = process.env.NODE_ENV === 'production'
+  ? process.env.NEXT_PUBLIC_VERCEL_URL
+  : `http://${hostname}:${NEXTJS_PORT}`;
+
 const io = new Server(server, {
   cors: {
-    origin: `http://${hostname}:${NEXTJS_PORT}`, // Allow connections from Next.js app
+    origin: [NEXTJS_URL, 'http://localhost:3000'],
     methods: ['GET', 'POST']
   }
 });

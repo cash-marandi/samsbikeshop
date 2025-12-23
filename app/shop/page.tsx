@@ -1,23 +1,57 @@
 
 'use client';
-import React, { useState } from 'react';
-import { ProductType } from '../types';
-import { MOCK_PRODUCTS } from '../constants';
+import React, { useState, useEffect } from 'react';
+import { ProductType, Product } from '../types'; // Assuming Product type is also available
 // import { useCart } from '../context/CartContext';
 
 export default function ShopPage() {
   const [filter, setFilter] = useState<ProductType | 'ALL'>('ALL');
   const [search, setSearch] = useState('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   // const { addItem } = useCart();
 
-  const filtered = MOCK_PRODUCTS.filter(p => {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        setProducts(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []); // Empty dependency array means this runs once on mount
+
+  const filtered = products.filter(p => {
     const matchesFilter = filter === 'ALL' || p.type === filter;
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
-  const addItem = (item: any) => {
+  const addItem = (item: Product) => {
     console.log('add item to cart', item);
+    // addItem(item); // Uncomment this line when useCart is implemented
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-white text-xl">Loading products...</div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen text-red-500 text-xl">Error: {error}</div>
+    );
   }
 
   return (
