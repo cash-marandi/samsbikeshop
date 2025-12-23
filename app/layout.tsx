@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+// import { Inter } from 'next/font/google' // Removed Inter import
 import './globals.css'
 import { Navbar } from './components/Navbar'
 import { Footer } from './components/Footer'
-import { AuthProvider } from './context/AuthContext'
-import { CartProvider } from './context/CartContext'
+import Providers from './context/Providers'
 
-const inter = Inter({ subsets: ['latin'] })
+// const inter = Inter({ subsets: ['latin'] }) // Removed Inter instantiation
 
 export const metadata: Metadata = {
   title: 'Sams Bike Shop | Buy, Rent, Auction',
@@ -20,16 +19,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-zinc-950 text-zinc-50`}>
-        <AuthProvider>
-          <CartProvider>
-            <Navbar />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </CartProvider>
-        </AuthProvider>
+      <body className="font-sans bg-zinc-950 text-zinc-50"> {/* Changed className */}
+        <Providers>
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   )

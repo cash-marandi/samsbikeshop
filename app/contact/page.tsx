@@ -57,13 +57,17 @@ export default function ContactPage() {
                </div>
             </div>
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Appointment Date</label>
+              <input type="date" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 focus:outline-none focus:border-blue-900" />
+            </div>
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Subject</label>
               <select className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 focus:outline-none focus:border-blue-900 appearance-none">
                 <option>Select an inquiry type</option>
                 <option>Bike Sales</option>
                 <option>Rental Booking</option>
                 <option>Auction Question</option>
-                <option>Service & Repair</option>
+                <option selected>Service & Repair</option>
               </select>
             </div>
             <div className="space-y-2">

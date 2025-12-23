@@ -1,4 +1,4 @@
-import { Product, ProductType, RentalBike, Auction, User, NewsPost } from './types';
+import { Product, ProductType, RentalBike, Auction, User, NewsPost, UserRole, AuctionCategory } from './types';
 
 export const MOCK_PRODUCTS: Product[] = [
   {
@@ -12,6 +12,7 @@ export const MOCK_PRODUCTS: Product[] = [
     isSold: false,
     isSpecial: true,
     discount: 10,
+    stock: 25,
   },
   {
     id: 'p2',
@@ -22,6 +23,7 @@ export const MOCK_PRODUCTS: Product[] = [
     type: ProductType.PART,
     brand: 'Shimano',
     isSold: false,
+    stock: 100,
   },
   {
     id: 'p3',
@@ -32,6 +34,7 @@ export const MOCK_PRODUCTS: Product[] = [
     type: ProductType.PART,
     brand: 'Giant',
     isSold: true,
+    stock: 0, // Assuming sold out
   },
   {
     id: 'p4',
@@ -42,6 +45,7 @@ export const MOCK_PRODUCTS: Product[] = [
     type: ProductType.ACCESSORY,
     brand: 'Bontrager',
     isSold: false,
+    stock: 50,
   },
 ];
 
@@ -75,9 +79,10 @@ export const MOCK_AUCTIONS: Auction[] = [
     startTime: Date.now() - 3600000,
     endTime: Date.now() + 7200000,
     status: 'LIVE',
+    category: AuctionCategory.VINTAGE, // Added category
     bidHistory: [
-      { user: 'BikerBob', amount: 300, time: Date.now() - 2000000 },
-      { user: 'CyclingFan', amount: 350, time: Date.now() - 500000 },
+      { user: { id: 'u3', name: 'BikerBob' }, amount: 300, time: Date.now() - 2000000 },
+      { user: { id: 'u4', name: 'CyclingFan' }, amount: 350, time: Date.now() - 500000 },
     ],
   },
   {
@@ -90,6 +95,7 @@ export const MOCK_AUCTIONS: Auction[] = [
     startTime: Date.now() + 86400000,
     endTime: Date.now() + 172800000,
     status: 'UPCOMING',
+    category: AuctionCategory.COMPONENTS, // Added category
     bidHistory: [],
   },
 ];
@@ -99,17 +105,19 @@ export const MOCK_USERS: User[] = [
     id: 'u1',
     name: 'Sam Owner',
     email: 'admin@samsbike.shop',
-    role: 'ADMIN',
+    role: UserRole.TEAM_ADMIN,
     isApprovedForAuction: true,
     orderHistory: [],
+    watchlist: ['a1'], // Added watchlist
   },
   {
     id: 'u2',
     name: 'John Doe',
     email: 'john@example.com',
-    role: 'USER',
+    role: UserRole.USER,
     isApprovedForAuction: false,
     orderHistory: ['p1'],
+    watchlist: [], // Added watchlist
   },
 ];
 

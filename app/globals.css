@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-body {
-  font-family: 'Inter', sans-serif;
-}
+/* Removed explicit font-family for Inter, relying on font-sans utility class in layout.tsx */
 
 .bg-grid {
   background-image: radial-gradient(circle, #333 1px, transparent 1px);
