@@ -35,7 +35,7 @@ const UserSchema: Schema = new Schema(
     },
     role: {
       type: String,
-      enum: ['USER'],
+      enum: ['USER', 'TEAM_ADMIN'],
       default: 'USER',
     },
     isApprovedForAuction: { // Add field to schema

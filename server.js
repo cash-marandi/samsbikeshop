@@ -19,11 +19,13 @@ const io = new Server(server, {
   }
 });
 
+const userSocketMap = new Map(); // Store userId -> socketId
+
 expressApp.use(express.json());
 
 // Custom endpoint for Next.js API routes to trigger Socket.IO emissions
 expressApp.post('/socket-emit', (req, res) => {
-  const { event, room, data, recipientSocketId } = req.body;
+  const { event, room, data, recipientSocketId, recipientUserId } = req.body;
   if (!event) {
     return res.status(400).json({ message: 'Event name is required.' });
   }
@@ -34,7 +36,16 @@ expressApp.post('/socket-emit', (req, res) => {
   } else if (recipientSocketId) {
     io.to(recipientSocketId).emit(event, data);
     console.log(`Socket.IO emitted '${event}' to recipient '${recipientSocketId}' with data:`, data);
-  } else {
+  } else if (recipientUserId) {
+    const targetSocketId = userSocketMap.get(recipientUserId);
+    if (targetSocketId) {
+      io.to(targetSocketId).emit(event, data);
+      console.log(`Socket.IO emitted '${event}' to user '${recipientUserId}' (socket: ${targetSocketId}) with data:`, data);
+    } else {
+      console.log(`User '${recipientUserId}' not connected, cannot emit '${event}'.`);
+    }
+  }
+  else {
     io.emit(event, data);
     console.log(`Socket.IO emitted '${event}' to all clients with data:`, data);
   }
@@ -43,6 +54,11 @@ expressApp.post('/socket-emit', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`Socket.IO client connected: ${socket.id}`);
+
+  socket.on('authenticateUser', (userId) => {
+    userSocketMap.set(userId, socket.id);
+    console.log(`User ${userId} authenticated with socket ${socket.id}. Map size: ${userSocketMap.size}`);
+  });
 
   socket.on('joinAuctionRoom', (auctionId) => {
     console.log(`Client ${socket.id} joining auction room: ${auctionId}`);
@@ -56,6 +72,14 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`Socket.IO client disconnected: ${socket.id}`);
+    // Remove user from map if they were authenticated
+    for (const [userId, socketId] of userSocketMap.entries()) {
+      if (socketId === socket.id) {
+        userSocketMap.delete(userId);
+        console.log(`User ${userId} disconnected. Map size: ${userSocketMap.size}`);
+        break;
+      }
+    }
   });
 });
 

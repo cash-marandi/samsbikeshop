@@ -52,18 +52,18 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-zinc-100">
-      <div className="bg-zinc-900 p-8 rounded-lg shadow-lg w-full max-w-md border border-zinc-700">
-        <h2 className="text-3xl font-bold text-center mb-6 text-blue-400">Sign Up</h2>
+    <div className="min-h-screen flex items-center justify-center bg-white text-gray-900">
+      <div className="bg-white p-8 rounded-lg border border-gray-300 w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center mb-6 text-orange-500">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               Name
             </label>
             <input
               type="text"
               id="name"
-              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-zinc-100 placeholder-zinc-500"
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 text-gray-900 placeholder-gray-500"
               placeholder="John Doe"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -71,13 +71,13 @@ const SignupPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
               Email
             </label>
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-zinc-100 placeholder-zinc-500"
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500 text-gray-900 placeholder-gray-500"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -85,13 +85,13 @@ const SignupPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
             </label>
             <input
               type="password"
               id="password"
-              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-zinc-100 placeholder-zinc-500"
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500 text-gray-900 placeholder-gray-500"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -101,15 +101,15 @@ const SignupPage = () => {
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-zinc-900 transition-colors disabled:opacity-50"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white transition-colors disabled:opacity-50"
             disabled={loading}
           >
             {loading ? 'Signing Up...' : 'Sign Up'}
           </button>
         </form>
-        <p className="text-center text-sm text-zinc-400 mt-6">
+        <p className="text-center text-sm text-gray-600 mt-6">
           Already have an account?{' '}
-          <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+          <Link href="/login" className="text-orange-500 hover:text-orange-600 font-medium">
             Login
           </Link>
         </p>

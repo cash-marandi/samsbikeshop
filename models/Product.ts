@@ -29,4 +29,9 @@ const ProductSchema: Schema = new Schema({
   timestamps: true,
 });
 
+// Indexes for performance
+ProductSchema.index({ isSold: 1 });
+ProductSchema.index({ type: 1 });
+ProductSchema.index({ brand: 1 });
+
 export default mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);

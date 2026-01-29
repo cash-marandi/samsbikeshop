@@ -37,4 +37,9 @@ const AuctionSchema: Schema = new Schema({
   timestamps: true,
 });
 
+// Indexes for performance
+AuctionSchema.index({ startTime: 1 });
+AuctionSchema.index({ endTime: 1 });
+AuctionSchema.index({ status: 1 });
+
 export default mongoose.models.Auction || mongoose.model<IAuction>('Auction', AuctionSchema);

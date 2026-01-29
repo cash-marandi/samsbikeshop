@@ -18,4 +18,7 @@ const NewsPostSchema: Schema = new Schema({
   timestamps: true,
 });
 
+// Indexes for performance
+NewsPostSchema.index({ date: -1 }); // Descending for latest news
+
 export default mongoose.models.NewsPost || mongoose.model<INewsPost>('NewsPost', NewsPostSchema);

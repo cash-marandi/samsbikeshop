@@ -27,11 +27,18 @@ async function dbConnect() {
   }
 
   if (!cached.mongoose.promise) {
-    console.log('Attempting to connect to MongoDB...');
-    console.log(`MONGODB_URL is defined: ${!!MONGODB_URL}`);
     const opts = {
       bufferCommands: false,
     };
+
+    // Log a redacted version of the connection string to help debug
+    try {
+      const redactedUrl = new URL(MONGODB_URL!);
+      redactedUrl.password = '<redacted>';
+      console.log(`Attempting to connect with URL: ${redactedUrl.toString()}`);
+    } catch (e) {
+      console.log('Could not parse MONGODB_URL. Please ensure it is a valid MongoDB connection string.');
+    }
 
     cached.mongoose.promise = mongoose.connect(MONGODB_URL!, opts)
       .then((mongoose) => {

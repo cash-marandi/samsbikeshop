@@ -109,7 +109,18 @@ export const authOptions: AuthOptions = {
         session.user.role = token.role as UserRole; // Cast to UserRole
         session.user.name = token.name as string;
         session.user.email = token.email as string;
-        session.user.isApprovedForAuction = token.isApprovedForAuction as boolean;
+
+        // Re-fetch user from DB to get latest isApprovedForAuction status
+        // This is crucial because `update()` from client side might not re-run `authorize`
+        // or `jwt` with updated user data directly.
+        await dbConnect();
+        const dbUser = await User.findById(session.user.id).select('isApprovedForAuction');
+        if (dbUser) {
+          session.user.isApprovedForAuction = dbUser.isApprovedForAuction;
+        } else {
+          // Fallback if user somehow not found in DB
+          session.user.isApprovedForAuction = false;
+        }
       }
       return session;
     },

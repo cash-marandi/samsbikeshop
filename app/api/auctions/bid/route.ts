@@ -76,12 +76,10 @@ export async function POST(req: Request) {
       maxBid: maxBid || null, // Store maxBid with the bid history for context
     };
 
-    // Before pushing new bid, check if there's an existing maxBid from another user
-    // This is where proper proxy bidding logic would come in:
-    // 1. Check if there's a stored maxBid higher than finalBidAmount.
-    // 2. If so, place a proxy bid from that user.
-    // This requires a persistent storage for proxy bids, which we don't have yet.
-    // For now, this is a direct bid and we store the submitted maxBid.
+    // Find previous highest bidder BEFORE pushing new bid
+    const previousHighestBidder = auction.bidHistory.length > 0
+      ? auction.bidHistory[auction.bidHistory.length - 1].user
+      : null;
 
     auction.bidHistory.push(newBid);
     auction.currentBid = finalBidAmount; // Update currentBid with finalBidAmount
@@ -95,12 +93,12 @@ export async function POST(req: Request) {
     });
 
     // --- Socket.IO Emission via HTTP Endpoint ---
-    // Emit 'bidUpdated' to all clients subscribed to this auction.
     const host = req.headers.get('host');
     const socketEmitUrl = host
       ? `http://${host.split(':')[0]}:3001/socket-emit`
       : 'http://localhost:3001/socket-emit'; // Fallback to localhost if host header is missing
     
+    // 1. Emit 'bidUpdated' to all clients subscribed to this auction.
     await fetch(socketEmitUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -111,23 +109,18 @@ export async function POST(req: Request) {
       }),
     });
 
-    // Identify previous highest bidder and emit 'outbidNotification'
-    // This requires additional logic to track previous bidders and their socket IDs or user IDs.
-    // For now, we'll just log that it would happen.
-    console.log(`Would emit 'outbidNotification' if previous bidder could be identified.`);
-    // Example for a specific user (requires mapping user ID to socket ID or a user-specific room):
-    // if (previousHighestBidderId && previousHighestBidderId !== session.user.id) {
-    //   await fetch(`http://${req.headers.host}/socket-emit`, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({
-    //       event: 'outbidNotification',
-    //       recipientUserId: previousHighestBidderId, // Server.js /socket-emit would need to handle this
-    //       data: { auctionId, newBidAmount: amount, auctionName: auction.name },
-    //     }),
-    //   });
-    // }
-    // ------------------------------------------
+    // 2. Identify previous highest bidder and emit 'outbidNotification'
+    if (previousHighestBidder && previousHighestBidder.toString() !== session.user.id) {
+        await fetch(socketEmitUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                event: 'outbidNotification',
+                recipientUserId: previousHighestBidder.toString(), // Send to the outbid user
+                data: { auctionId, newBidAmount: finalBidAmount, auctionName: auction.name },
+            }),
+        });
+    }
 
     return NextResponse.json(populatedAuction);
   } catch (error) {

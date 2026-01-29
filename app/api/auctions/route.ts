@@ -188,6 +188,9 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category');
     const sortBy = searchParams.get('sortBy');
     const search = searchParams.get('search'); // For general search functionality
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const skip = (page - 1) * limit;
 
     let query: any = {};
     if (category && category !== 'all') { // Assuming 'all' means no category filter
@@ -220,8 +223,20 @@ export async function GET(req: NextRequest) {
         break;
     }
 
-    const auctions = await Auction.find(query).sort(sortOptions);
-    return NextResponse.json(auctions, { status: 200 });
+    const [auctions, total] = await Promise.all([
+      Auction.find(query).sort(sortOptions).skip(skip).limit(limit),
+      Auction.countDocuments(query),
+    ]);
+
+    return NextResponse.json({
+      auctions,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    }, { status: 200 });
   } catch (error: any) {
     console.error('Fetch auctions API error:', error);
     return NextResponse.json({ message: error.message || 'An internal server error occurred.' }, { status: 500 });
@@ -277,7 +292,9 @@ export async function PATCH(req: NextRequest) {
         if (field === 'currentBid' || field === 'minIncrement') {
           updates[field] = parseFloat(value as string);
         } else if (field === 'startTime' || field === 'endTime') {
-          updates[field] = parseInt(value as string);
+          // Convert string timestamp to Date object for validation
+          const timestamp = parseInt(value as string);
+          updates[field] = new Date(timestamp);
         } else {
           updates[field] = value;
         }

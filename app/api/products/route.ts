@@ -174,10 +174,27 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   await dbConnect();
   try {
-    const products = await Product.find({});
-    return NextResponse.json(products, { status: 200 });
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20'); // Default higher for homepage
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      Product.find({}).skip(skip).limit(limit),
+      Product.countDocuments(),
+    ]);
+
+    return NextResponse.json({
+      products,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    }, { status: 200 });
   } catch (error: any) {
-    console.error('Error fetching products in API:', error); // Added detailed logging
+    console.error('Error fetching products in API:', error);
     return NextResponse.json({ message: error.message || 'Error fetching products from database.' }, { status: 500 });
   }
 }

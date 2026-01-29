@@ -25,9 +25,22 @@ export interface Product {
   isSpecial?: boolean;
   discount?: number;
   stock: number;
+  averageRating?: number; // Added for review summaries
+  reviewCount?: number;   // Added for review summaries
+}
+
+export interface Review {
+  _id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string; // ISO date string
 }
 
 export interface RentalBike {
+  _id?: string; // Add _id for MongoDB compatibility
   id: string;
   name: string;
   type: string;
@@ -75,6 +88,7 @@ export interface User {
 }
 
 export interface NewsPost {
+  _id?: string; // Add _id for MongoDB compatibility
   id: string;
   title: string;
   content: string;
@@ -91,4 +105,24 @@ export interface TeamMember {
   role: UserRole; // Assuming UserRole is imported
   image: string; // image URL for the team member
   // Note: Password should not be exposed on the frontend
+}
+
+// Client-side types for Bike Request Feature
+export enum RequestType {
+  BIKE = 'Bike',
+  PART = 'Part',
+  OTHER = 'Other',
+}
+
+export enum RequestStatus {
+  PENDING = 'Pending',
+  REVIEWED = 'Reviewed',
+  FULFILLED = 'Fulfilled',
+  ARCHIVED = 'Archived',
+}
+
+export interface BikeRequestFormData {
+  requestType: RequestType;
+  details: string;
+  budget?: number;
 }
