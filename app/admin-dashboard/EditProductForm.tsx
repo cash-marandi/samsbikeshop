@@ -13,7 +13,6 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
     name: string;
     description: string;
     price: string;
-    image: File | string | null; // Can be File, URL string, or null
     type: ProductType;
     brand: string;
     stock: string;
@@ -24,7 +23,6 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
     name: initialProduct.name,
     description: initialProduct.description,
     price: initialProduct.price.toString(),
-    image: initialProduct.image || null, // Pre-populate with existing image URL
     type: initialProduct.type,
     brand: initialProduct.brand,
     stock: initialProduct.stock.toString(),
@@ -32,42 +30,55 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
     isSpecial: initialProduct.isSpecial || false,
     discount: (initialProduct.discount || 0).toString(),
   });
+  const [existingImages, setExistingImages] = useState<string[]>(initialProduct.images || (initialProduct.image ? [initialProduct.image] : []));
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(initialProduct.image || null);
-
-  useEffect(() => {
-    if (formData.image instanceof File) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(formData.image);
-    } else if (typeof formData.image === 'string') {
-      setImagePreview(formData.image);
-    } else {
-      setImagePreview(null);
-    }
-  }, [formData.image]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target; // Removed checked from destructuring
+    const { name, value, type } = e.target;
     let checked: boolean | undefined;
 
     if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
       checked = e.target.checked;
     }
 
-    if (type === 'file' && e.target instanceof HTMLInputElement) {
-      const fileInput = e.target as HTMLInputElement; // Explicitly cast to HTMLInputElement
-      setFormData(prev => ({ ...prev, [name]: fileInput.files ? fileInput.files[0] : null }));
-    } else if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
+    if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
       setFormData(prev => ({ ...prev, [name]: checked }));
-    }
-    else {
+    } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setNewImages(prev => [...prev, ...fileArray]);
+      
+      const newPreviews: string[] = [];
+      fileArray.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newPreviews.push(reader.result as string);
+          if (newPreviews.length === fileArray.length) {
+            setImagePreviews(prev => [...prev, ...newPreviews]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeNewImage = (index: number) => {
+    setNewImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +86,12 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
     setLoading(true);
     setError(null);
     setSuccess(null);
+
+    if (existingImages.length + newImages.length === 0) {
+      setError('At least one image is required.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const data = new FormData();
@@ -87,18 +104,11 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
       data.append('isSold', formData.isSold.toString());
       data.append('isSpecial', formData.isSpecial.toString());
       data.append('discount', formData.discount);
+      data.append('existingImages', JSON.stringify(existingImages));
 
-
-      if (formData.image instanceof File) {
-        data.append('image', formData.image);
-      } else if (formData.image === null) {
-        data.append('image', ''); // User explicitly cleared image, send empty string
-      } else if (typeof formData.image === 'string') {
-        // If it's an existing URL and not changed, don't append it as a file.
-        // The backend logic is set to update image only if a file is provided or explicitly cleared.
-        // If the current image is just the old URL string and no new file, it means no change.
-      }
-
+      newImages.forEach(image => {
+        data.append('images', image);
+      });
 
       const response = await fetch(`/api/products?id=${initialProduct._id}`, {
         method: 'PATCH',
@@ -111,7 +121,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
       }
 
       setSuccess('Product updated successfully!');
-      onProductUpdated(); // Notify parent to refresh product list
+      onProductUpdated();
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
     } finally {
@@ -175,18 +185,54 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
               />
             </div>
           </div>
+          
           <div>
-            <label htmlFor="image" className="block text-sm font-medium text-zinc-400">Product Image</label>
-            {imagePreview && (
-              <div className="mb-2">
-                <img src={imagePreview} alt="Current Product" className="w-32 h-32 object-cover rounded-md" />
+            <label className="block text-sm font-medium text-zinc-400 mb-2">Product Images</label>
+            {existingImages.length > 0 && (
+              <div className="mb-3">
+                <p className="text-xs text-zinc-500 mb-2">Current Images:</p>
+                <div className="flex flex-wrap gap-2">
+                  {existingImages.map((img, index) => (
+                    <div key={index} className="relative">
+                      <img src={img} alt={`Current ${index + 1}`} className="h-20 w-20 object-cover rounded-md" />
+                      <button
+                        type="button"
+                        onClick={() => removeExistingImage(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {imagePreviews.length > 0 && (
+              <div className="mb-3">
+                <p className="text-xs text-zinc-500 mb-2">New Images to Add:</p>
+                <div className="flex flex-wrap gap-2">
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index} className="relative">
+                      <img src={preview} alt={`New ${index + 1}`} className="h-20 w-20 object-cover rounded-md border-2 border-blue-500" />
+                      <button
+                        type="button"
+                        onClick={() => removeNewImage(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             <input
               type="file"
-              id="image"
-              name="image"
-              onChange={handleChange}
+              id="images"
+              name="images"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
               className="mt-1 block w-full text-white
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-md file:border-0
@@ -195,6 +241,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ onClose, onProductUpd
                 hover:file:bg-blue-600"
             />
           </div>
+          
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="type" className="block text-sm font-medium text-zinc-400">Type</label>

@@ -32,37 +32,40 @@ export async function POST(request: NextRequest) {
     const pricePerDay = parseFloat(formData.get('pricePerDay') as string);
     const isAvailable = formData.get('isAvailable') === 'true' || true;
 
-    let imageUrl: string | undefined;
-    const imageFile = formData.get('image') as File;
-    if (imageFile && imageFile.size > 0) {
-      // Upload to Cloudinary
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+    const imageFiles = formData.getAll('images') as File[];
+    const imageUrls: string[] = [];
 
-      const uploadResult: any = await new Promise((resolve: any, reject: any) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'samsbikeshop_rentals' },
-          (error: any, result: any) => {
-            if (error) {
-              reject(new Error('Failed to upload rental image to Cloudinary.'));
-            } else {
-              resolve(result);
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const uploadResult: any = await new Promise((resolve: any, reject: any) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'samsbikeshop_rentals' },
+            (error: any, result: any) => {
+              if (error) {
+                reject(new Error('Failed to upload rental image to Cloudinary.'));
+              } else {
+                resolve(result);
+              }
             }
-          }
-        );
-        uploadStream.end(buffer);
-      });
-      imageUrl = uploadResult.secure_url;
-    } else {
-      // Use a default image if no image provided
-      imageUrl = `https://picsum.photos/seed/rental${Date.now()}/600/400`;
+          );
+          uploadStream.end(buffer);
+        });
+        imageUrls.push(uploadResult.secure_url);
+      }
+    }
+
+    if (imageUrls.length === 0) {
+      imageUrls.push(`https://picsum.photos/seed/rental${Date.now()}/600/400`);
     }
     
     const rentalBike = new RentalBike({
       name,
       type,
       pricePerDay,
-      image: imageUrl || '',
+      images: imageUrls,
       isAvailable,
     });
 

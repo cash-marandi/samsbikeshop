@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import { useSession } from 'next-auth/react';
 import type { Product } from '../types';
 
-// The API returns populated product data, so we need a different structure for the cart items in the context
 export interface CartItem {
   product: Product;
   quantity: number;
@@ -18,22 +17,25 @@ interface CartContextType {
   total: number;
   itemCount: number;
   loading: boolean;
-  toastMessage: string | null; // Add toast message to context type
-  showToast: (message: string) => void; // Add showToast function to context type
+  toastMessage: string | null;
+  showToast: (message: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const getProductId = (product: Product): string => {
+  return product._id || product.id || '';
+};
+
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const isInitialized = useRef(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Utility Functions
-  const getLocalCart = (): CartItem[] => {
+  const getLocalCart = useCallback((): CartItem[] => {
     try {
       const storedCart = localStorage.getItem('cart');
       return storedCart ? JSON.parse(storedCart) : [];
@@ -41,11 +43,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.error("Failed to parse cart from localStorage", error);
       return [];
     }
-  };
+  }, []);
 
-  const saveLocalCart = (cartItems: CartItem[]) => {
+  const saveLocalCart = useCallback((cartItems: CartItem[]) => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
-  };
+  }, []);
 
   const showToast = useCallback((message: string) => {
     setToastMessage(message);
@@ -55,18 +57,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     toastTimerRef.current = setTimeout(() => {
       setToastMessage(null);
       toastTimerRef.current = null;
-    }, 3000); // Hide after 3 seconds
-  }, []); // showToast depends only on setToastMessage and clearTimeout which are stable
+    }, 3000);
+  }, []);
 
-  // Cart Actions - defined here to access showToast and internal state directly
-  const updateItemQuantity = async (productId: string, quantity: number) => {
-    // First, fetch the latest product info to get current stock
+  const updateItemQuantity = useCallback(async (productId: string, quantity: number) => {
     const productResponse = await fetch(`/api/products/${productId}`);
     if (!productResponse.ok) {
       showToast('Could not verify product stock. Please try again.');
       return;
     }
     const currentProduct: Product = await productResponse.json();
+    const currentProductId = getProductId(currentProduct);
 
     if (quantity > currentProduct.stock) {
       showToast(`Only ${currentProduct.stock} items of ${currentProduct.name} available.`);
@@ -86,52 +87,59 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         if (response.ok) {
           const updatedCart = await response.json();
-           const formattedItems = updatedCart.items.map((item: any) => ({
-             product: item.productId,
-             quantity: item.quantity,
-           }));
-           setItems(formattedItems);
-           saveLocalCart(formattedItems);
+          const formattedItems = updatedCart.items.map((item: { productId: Product; quantity: number }) => ({
+            product: item.productId,
+            quantity: item.quantity,
+          }));
+          setItems(formattedItems);
+          saveLocalCart(formattedItems);
         }
       } catch (error) {
         console.error('Failed to update DB cart:', error);
       }
     } else {
-      // Unauthenticated: update local state and localStorage
-      let updatedItems;
-      if (quantity > 0) {
-        const existingItem = items.find(item => item.product.id === productId);
-        if (existingItem) {
-          updatedItems = items.map(item =>
-            item.product.id === productId ? { ...item, quantity } : item
-          );
+      setItems(prevItems => {
+        let updatedItems;
+        if (quantity > 0) {
+          const existingItemIndex = prevItems.findIndex(item => getProductId(item.product) === currentProductId);
+          if (existingItemIndex >= 0) {
+            updatedItems = [...prevItems];
+            updatedItems[existingItemIndex] = { ...updatedItems[existingItemIndex], quantity };
+          } else {
+            updatedItems = [...prevItems, { product: currentProduct, quantity }];
+          }
         } else {
-          updatedItems = [...items, { product: currentProduct, quantity }];
+          updatedItems = prevItems.filter(item => getProductId(item.product) !== currentProductId);
         }
-      } else {
-        updatedItems = items.filter(item => item.product.id !== productId);
-      }
-      setItems(updatedItems);
-      saveLocalCart(updatedItems);
+        saveLocalCart(updatedItems);
+        return updatedItems;
+      });
     }
-  };
+  }, [status, showToast, saveLocalCart]);
 
-  const addItem = async (product: Product, quantity = 1) => {
-    const existingItem = items.find(item => item.product.id === product.id);
-    const newQuantity = (existingItem?.quantity || 0) + quantity;
-    await updateItemQuantity(product.id, newQuantity);
+  const addItem = useCallback(async (product: Product, quantity = 1) => {
+    const productId = getProductId(product);
+    if (!productId) {
+      showToast('Error: Invalid product');
+      return;
+    }
+    
+    const currentQuantity = items.find(item => getProductId(item.product) === productId)?.quantity || 0;
+    const newQuantity = currentQuantity + quantity;
+    await updateItemQuantity(productId, newQuantity);
     showToast(`${product.name} added to cart!`);
-  };
+  }, [items, updateItemQuantity, showToast]);
 
-  const removeItem = async (productId: string) => {
-    await updateItemQuantity(productId, 0); // Setting quantity to 0 or less removes it
-  };
+  const removeItem = useCallback(async (productId: string) => {
+    await updateItemQuantity(productId, 0);
+  }, [updateItemQuantity]);
 
-  const clearCart = async () => {
+  const clearCart = useCallback(async () => {
     if (status === 'authenticated') {
       try {
         for (const item of items) {
-          await fetch(`/api/cart?productId=${item.product.id}`, { method: 'DELETE' });
+          const productId = getProductId(item.product);
+          await fetch(`/api/cart?productId=${productId}`, { method: 'DELETE' });
         }
       } catch (error) {
         console.error('Failed to clear DB cart', error);
@@ -139,9 +147,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     setItems([]);
     saveLocalCart([]);
-  };
+  }, [status, items, saveLocalCart]);
 
-  // API Callbacks
   const syncWithDb = useCallback(async () => {
     if (status !== 'authenticated') return;
     setLoading(true);
@@ -149,7 +156,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const response = await fetch('/api/cart');
       if (response.ok) {
         const dbCart = await response.json();
-        const formattedItems = dbCart.items.map((item: any) => ({
+        const formattedItems = (dbCart.items || []).map((item: { productId: Product; quantity: number }) => ({
           product: item.productId,
           quantity: item.quantity,
         }));
@@ -161,7 +168,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } finally {
       setLoading(false);
     }
-  }, [status, saveLocalCart]); // Added saveLocalCart to dependencies
+  }, [status, saveLocalCart]);
   
   const mergeCarts = useCallback(async () => {
     const localCart = getLocalCart();
@@ -173,11 +180,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true);
     try {
       for (const item of localCart) {
+        const productId = getProductId(item.product);
         await fetch('/api/cart', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            productId: item.product.id,
+            productId,
             quantity: item.quantity,
           }),
         });
@@ -186,31 +194,27 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await syncWithDb();
     } catch (error) {
       console.error('Failed to merge carts:', error);
+    } finally {
       setLoading(false);
     }
-  }, [syncWithDb, getLocalCart]); // Added getLocalCart to dependencies
+  }, [getLocalCart, syncWithDb]);
 
-  // Effect to initialize cart on auth status change
   useEffect(() => {
-    // TEMPORARILY DISABLED TO PREVENT DB ERRORS
-    // if (status === 'loading') return;
+    if (status === 'loading') return;
 
-    // if (status === 'authenticated' && !isInitialized.current) {
-    //   mergeCarts();
-    //   isInitialized.current = true;
-    // } else if (status === 'unauthenticated') {
-    //   setItems(getLocalCart());
-    //   setLoading(false);
-    //   isInitialized.current = false;
-    // }
-  }, [status, mergeCarts]);
+    if (status === 'authenticated' && !isInitialized.current) {
+      mergeCarts();
+      isInitialized.current = true;
+    } else if (status === 'unauthenticated') {
+      const localCart = getLocalCart();
+      setItems(localCart);
+      setLoading(false);
+      isInitialized.current = false;
+    }
+  }, [status, mergeCarts, getLocalCart]);
 
-  // Derived State
   const total = items.reduce((sum, item) => sum + (item.product.price * (1 - (item.product.discount || 0) / 100)) * item.quantity, 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-
-
-  // #endregion
 
   return (
     <CartContext.Provider value={{ items, addItem, removeItem, updateItemQuantity, clearCart, total, itemCount, loading, toastMessage, showToast }}>

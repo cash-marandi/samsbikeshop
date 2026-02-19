@@ -9,8 +9,9 @@ export interface RentalBike {
   name: string;
   type: string;
   image: string;
+  images?: string[];
   pricePerDay: number;
-  isAvailable: boolean; // Add isAvailable to RentalBike interface
+  isAvailable: boolean;
 }
 
 export interface Customer {

@@ -13,20 +13,21 @@ export enum UserRole {
 }
 
 export interface Product {
-  _id?: string; // Add _id for MongoDB compatibility
+  _id?: string;
   id: string;
   name: string;
   description: string;
   price: number;
   image: string;
+  images?: string[];
   type: ProductType;
   brand: string;
   isSold: boolean;
   isSpecial?: boolean;
   discount?: number;
   stock: number;
-  averageRating?: number; // Added for review summaries
-  reviewCount?: number;   // Added for review summaries
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 export interface Review {
@@ -40,12 +41,13 @@ export interface Review {
 }
 
 export interface RentalBike {
-  _id?: string; // Add _id for MongoDB compatibility
+  _id?: string;
   id: string;
   name: string;
   type: string;
   pricePerDay: number;
   image: string;
+  images?: string[];
   isAvailable: boolean;
 }
 
@@ -62,19 +64,20 @@ export enum AuctionCategory {
 }
 
 export interface Auction {
-  _id?: string; // Add _id for MongoDB compatibility
+  _id?: string;
   id: string;
   name: string;
   description: string;
   image: string;
+  images?: string[];
   currentBid: number;
   minIncrement: number;
-  startTime: number; // timestamp
-  endTime: number; // timestamp
+  startTime: number;
+  endTime: number;
   status: 'UPCOMING' | 'LIVE' | 'ENDED';
-  category: AuctionCategory; // Add category to Auction interface
-  bidHistory: { user: {id: string, name: string}; amount: number; time: number }[]; // user will be populated
-  winner?: string; // winner will be user id
+  category: AuctionCategory;
+  bidHistory: { user: {id: string, name: string}; amount: number; time: number }[];
+  winner?: string;
 }
 
 export interface User {

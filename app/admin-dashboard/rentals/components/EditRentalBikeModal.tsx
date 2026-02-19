@@ -7,7 +7,7 @@ interface EditRentalBikeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onBikeUpdated: () => void;
-  bike: RentalBike | null; // The bike to edit
+  bike: RentalBike | null;
 }
 
 export default function EditRentalBikeModal({ isOpen, onClose, onBikeUpdated, bike }: EditRentalBikeModalProps) {
@@ -16,35 +16,50 @@ export default function EditRentalBikeModal({ isOpen, onClose, onBikeUpdated, bi
   const [type, setType] = useState(bike?.type || '');
   const [pricePerDay, setPricePerDay] = useState<number | string>(bike?.pricePerDay || '');
   const [isAvailable, setIsAvailable] = useState(bike?.isAvailable ?? true);
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(bike?.image || null);
+  const [existingImages, setExistingImages] = useState<string[]>(bike?.images || (bike?.image ? [bike.image] : []));
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Update form fields when the 'bike' prop changes (e.g., when modal opens for a new bike)
   useEffect(() => {
     if (bike) {
       setName(bike.name);
       setType(bike.type);
       setPricePerDay(bike.pricePerDay);
       setIsAvailable(bike.isAvailable);
-      setImage(null); // Clear selected file when switching bikes
-      setImagePreview(bike.image || null);
+      setExistingImages(bike.images || (bike.image ? [bike.image] : []));
+      setNewImages([]);
+      setImagePreviews([]);
     }
   }, [bike]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    } else {
-      setImage(null);
-      if (bike?.image) { // If there was an existing image and none selected, revert to existing
-        setImagePreview(bike.image);
-      } else {
-        setImagePreview(null);
-      }
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setNewImages(prev => [...prev, ...fileArray]);
+      
+      const newPreviews: string[] = [];
+      fileArray.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newPreviews.push(reader.result as string);
+          if (newPreviews.length === fileArray.length) {
+            setImagePreviews(prev => [...prev, ...newPreviews]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeNewImage = (index: number) => {
+    setNewImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,19 +77,22 @@ export default function EditRentalBikeModal({ isOpen, onClose, onBikeUpdated, bi
       return;
     }
 
+    if (existingImages.length + newImages.length === 0) {
+      showToast('At least one image is required.');
+      setIsSubmitting(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('type', type);
     formData.append('pricePerDay', String(pricePerDay));
     formData.append('isAvailable', String(isAvailable));
-    if (image) {
-      formData.append('image', image);
-    } else if (imagePreview) { // If no new image, but there's an image preview (existing image)
-      formData.append('existingImage', imagePreview);
-    } else { // If no image and no preview (image was cleared)
-        formData.append('image', new File([], 'empty.txt', { type: 'text/plain' })); // Signal to clear image
-    }
+    formData.append('existingImages', JSON.stringify(existingImages));
 
+    newImages.forEach(image => {
+      formData.append('images', image);
+    });
 
     try {
       const response = await fetch(`/api/rentals/${bike._id}`, {
@@ -98,11 +116,11 @@ export default function EditRentalBikeModal({ isOpen, onClose, onBikeUpdated, bi
     }
   };
 
-  if (!isOpen || !bike) return null; // Ensure bike is provided when modal is open
+  if (!isOpen || !bike) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center">
-      <div className="relative p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+      <div className="relative p-5 border w-full max-w-lg shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Edit Rental Bike: {bike.name}</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -144,26 +162,53 @@ export default function EditRentalBikeModal({ isOpen, onClose, onBikeUpdated, bi
           </div>
 
           <div>
-            <label htmlFor="image" className="block text-sm font-medium text-gray-700">Bike Image</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Bike Images</label>
+            {existingImages.length > 0 && (
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-2">Current Images:</p>
+                <div className="flex flex-wrap gap-2">
+                  {existingImages.map((img, index) => (
+                    <div key={index} className="relative">
+                      <img src={img} alt={`Current ${index + 1}`} className="h-20 w-20 object-cover rounded-md" />
+                      <button
+                        type="button"
+                        onClick={() => removeExistingImage(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {imagePreviews.length > 0 && (
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-2">New Images to Add:</p>
+                <div className="flex flex-wrap gap-2">
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index} className="relative">
+                      <img src={preview} alt={`New ${index + 1}`} className="h-20 w-20 object-cover rounded-md border-2 border-orange-500" />
+                      <button
+                        type="button"
+                        onClick={() => removeNewImage(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <input
               type="file"
-              id="image"
+              id="images"
+              multiple
               accept="image/*"
               className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
               onChange={handleImageChange}
             />
-            {imagePreview && (
-              <div className="mt-2 flex items-center space-x-2">
-                <img src={imagePreview} alt="Image Preview" className="h-20 w-20 object-cover rounded-md" />
-                <button
-                    type="button"
-                    onClick={() => setImagePreview(null)}
-                    className="text-sm text-red-600 hover:text-red-800"
-                >
-                    Remove Image
-                </button>
-              </div>
-            )}
           </div>
 
           <div className="flex items-center">

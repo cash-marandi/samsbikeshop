@@ -13,7 +13,7 @@ cloudinary.config({
 
 // Helper function to validate auction data for POST
 function validateAuctionData(data: any) {
-  const { name, description, currentBid, minIncrement, startTime, endTime, image } = data;
+  const { name, description, currentBid, minIncrement, startTime, endTime, images } = data;
 
   if (!name || typeof name !== 'string') {
     return { isValid: false, message: 'Name is required and must be a string.' };
@@ -33,8 +33,8 @@ function validateAuctionData(data: any) {
   if (startTime >= endTime) {
     return { isValid: false, message: 'End time must be after start time.' };
   }
-  if (!image || typeof image !== 'string') {
-    return { isValid: false, message: 'Image URL is required and must be a string.' };
+  if (!images || !Array.isArray(images) || images.length === 0) {
+    return { isValid: false, message: 'At least one image is required.' };
   }
 
   return { isValid: true };
@@ -106,12 +106,12 @@ function validatePartialAuctionData(data: any) {
   }
 
 
-  if (data.image !== undefined) {
-    if (typeof data.image !== 'string' || data.image.trim() === '') {
+  if (data.images !== undefined) {
+    if (!Array.isArray(data.images) || data.images.length === 0) {
       isValid = false;
-      message = 'Image URL must be a non-empty string.';
+      message = 'At least one image is required.';
     } else {
-      updates.image = data.image;
+      updates.images = data.images;
     }
   }
   // Optional updates for status, bidHistory, winner
@@ -135,35 +135,43 @@ export async function POST(req: NextRequest) {
     const minIncrement = parseFloat(formData.get('minIncrement') as string);
     const startTime = new Date(parseInt(formData.get('startTime') as string, 10));
     const endTime = new Date(parseInt(formData.get('endTime') as string, 10));
-    const imageFile = formData.get('image') as File;
 
-    let imageUrl: string | undefined;
+    const imageFiles = formData.getAll('images') as File[];
+    const imageUrls: string[] = [];
 
-    if (imageFile && imageFile.size > 0) {
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+    if (imageFiles.length === 0) {
+      return NextResponse.json({ message: 'At least one image is required.' }, { status: 400 });
+    }
 
-      const uploadResult: any = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'samsbikeshop_auctions' }, // Optional: organize uploads in a folder
-          (error, result) => {
-            if (error) {
-              console.error('Cloudinary auction image upload error:', error);
-              return reject(new Error('Failed to upload image to Cloudinary.'));
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const uploadResult: any = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'samsbikeshop_auctions' },
+            (error, result) => {
+              if (error) {
+                console.error('Cloudinary auction image upload error:', error);
+                return reject(new Error('Failed to upload image to Cloudinary.'));
+              }
+              resolve(result);
             }
-            resolve(result);
-          }
-        );
-        uploadStream.end(buffer);
-      });
-      imageUrl = uploadResult.secure_url;
-    } else {
-      return NextResponse.json({ message: 'Auction image is required.' }, { status: 400 });
+          );
+          uploadStream.end(buffer);
+        });
+        imageUrls.push(uploadResult.secure_url);
+      }
+    }
+
+    if (imageUrls.length === 0) {
+      return NextResponse.json({ message: 'Failed to upload images.' }, { status: 400 });
     }
 
     const auctionData = {
-      name, description, currentBid, minIncrement, startTime, endTime, image: imageUrl,
-      status: 'UPCOMING', // Default status for new auctions
+      name, description, currentBid, minIncrement, startTime, endTime, images: imageUrls,
+      status: 'UPCOMING',
       bidHistory: [],
     };
 
@@ -255,44 +263,54 @@ export async function PATCH(req: NextRequest) {
 
     const formData = await req.formData();
     const updates: { [key: string]: any } = {};
-    let imageUrl: string | undefined;
 
-    // Process image file if provided
-    const imageFile = formData.get('image') as File;
-    if (imageFile && imageFile.size > 0) {
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      const uploadResult: any = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'samsbikeshop_auctions' },
-          (error, result) => {
-            if (error) {
-              console.error('Cloudinary auction image update error:', error);
-              return reject(new Error('Failed to upload new image to Cloudinary.'));
-            }
-            resolve(result);
-          }
-        );
-        uploadStream.end(buffer);
-      });
-      imageUrl = uploadResult.secure_url;
-      updates.image = imageUrl; // Add new image URL to updates
-    } else if (formData.has('image') && formData.get('image') === '') {
-      // If 'image' field is explicitly empty, user intends to remove existing image
-      updates.image = '';
+    const existingImagesStr = formData.get('existingImages') as string;
+    let existingImages: string[] = [];
+    if (existingImagesStr) {
+      try {
+        existingImages = JSON.parse(existingImagesStr);
+      } catch (e) {
+        existingImages = [];
+      }
     }
 
+    const imageFiles = formData.getAll('images') as File[];
+    const newImageUrls: string[] = [];
 
-    // Process other fields
-    const fieldsToProcess = ['name', 'description', 'currentBid', 'minIncrement', 'startTime', 'endTime', 'status', 'winner']; // Removed image as it's handled above
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const uploadResult: any = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'samsbikeshop_auctions' },
+            (error, result) => {
+              if (error) {
+                console.error('Cloudinary auction image update error:', error);
+                return reject(new Error('Failed to upload new image to Cloudinary.'));
+              }
+              resolve(result);
+            }
+          );
+          uploadStream.end(buffer);
+        });
+        newImageUrls.push(uploadResult.secure_url);
+      }
+    }
+
+    const allImages = [...existingImages, ...newImageUrls];
+    if (allImages.length > 0) {
+      updates.images = allImages;
+    }
+
+    const fieldsToProcess = ['name', 'description', 'currentBid', 'minIncrement', 'startTime', 'endTime', 'status', 'winner'];
     for (const field of fieldsToProcess) {
       const value = formData.get(field);
       if (value !== null) {
         if (field === 'currentBid' || field === 'minIncrement') {
           updates[field] = parseFloat(value as string);
         } else if (field === 'startTime' || field === 'endTime') {
-          // Convert string timestamp to Date object for validation
           const timestamp = parseInt(value as string);
           updates[field] = new Date(timestamp);
         } else {
@@ -301,25 +319,20 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
-    // Special validation for start/end times if both are present in updates
     if (updates.startTime !== undefined && updates.endTime !== undefined && updates.startTime >= updates.endTime) {
       return NextResponse.json({ message: 'End time must be after start time.' }, { status: 400 });
     } else if (updates.startTime === undefined && updates.endTime !== undefined) {
-      // If only endTime is updated, check against existing startTime
       const existingAuction = await Auction.findById(id);
       if (existingAuction && existingAuction.startTime >= updates.endTime) {
         return NextResponse.json({ message: 'End time must be after existing start time.' }, { status: 400 });
       }
     } else if (updates.endTime === undefined && updates.startTime !== undefined) {
-      // If only startTime is updated, check against existing endTime
       const existingAuction = await Auction.findById(id);
       if (existingAuction && updates.startTime >= existingAuction.endTime) {
         return NextResponse.json({ message: 'Start time must be before existing end time.' }, { status: 400 });
       }
     }
 
-
-    // Validate partial updates using the helper function (or similar logic)
     const { isValid, message } = validatePartialAuctionData(updates);
     if (!isValid) {
       return NextResponse.json({ message }, { status: 400 });
@@ -328,7 +341,7 @@ export async function PATCH(req: NextRequest) {
     const updatedAuction = await Auction.findByIdAndUpdate(
       id,
       { $set: updates },
-      { new: true, runValidators: true } // Return the updated document and run schema validators
+      { new: true, runValidators: true }
     );
 
     if (!updatedAuction) {

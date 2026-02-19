@@ -49,6 +49,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Auction is not live' }, { status: 400 });
     }
 
+    const currentHighestBidder = auction.bidHistory.length > 0
+      ? auction.bidHistory[auction.bidHistory.length - 1].user.toString()
+      : null;
+
+    if (currentHighestBidder === session.user.id) {
+      return NextResponse.json({ message: 'You are already the highest bidder. No need to bid again!' }, { status: 400 });
+    }
+
     const minAllowedBid = auction.currentBid + auction.minIncrement;
     let finalBidAmount = amount;
 

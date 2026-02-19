@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import { Auction } from '@/app/types';
 
 interface AddAuctionFormProps {
   onClose: () => void;
@@ -11,32 +10,56 @@ const AddAuctionForm: React.FC<AddAuctionFormProps> = ({ onClose, onAuctionAdded
   const [formData, setFormData] = useState<{
     name: string;
     description: string;
-    image: File | null;
+    images: File[];
     currentBid: string;
     minIncrement: string;
-    startTime: string; // ISO string
-    endTime: string;   // ISO string
+    startTime: string;
+    endTime: string;
   }>({
     name: '',
     description: '',
-    image: null,
+    images: [],
     currentBid: '',
     minIncrement: '',
-    startTime: new Date().toISOString().slice(0, 16), // Default to current time
-    endTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), // Default to 7 days from now
+    startTime: new Date().toISOString().slice(0, 16),
+    endTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
   });
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (e.target instanceof HTMLInputElement && e.target.type === 'file') {
-      const fileInput = e.target as HTMLInputElement; // Explicitly cast to HTMLInputElement
-      setFormData(prev => ({ ...prev, [name]: fileInput.files ? fileInput.files[0] : null }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setFormData(prev => ({ ...prev, images: [...prev.images, ...fileArray] }));
+      
+      const newPreviews: string[] = [];
+      fileArray.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newPreviews.push(reader.result as string);
+          if (newPreviews.length === fileArray.length) {
+            setImagePreviews(prev => [...prev, ...newPreviews]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,20 +68,24 @@ const AddAuctionForm: React.FC<AddAuctionFormProps> = ({ onClose, onAuctionAdded
     setError(null);
     setSuccess(null);
 
+    if (formData.images.length === 0) {
+      setError('At least one image is required.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = new FormData();
       data.append('name', formData.name);
       data.append('description', formData.description);
       data.append('currentBid', formData.currentBid);
       data.append('minIncrement', formData.minIncrement);
-      data.append('startTime', new Date(formData.startTime).getTime().toString()); // Convert to timestamp
-      data.append('endTime', new Date(formData.endTime).getTime().toString());     // Convert to timestamp
+      data.append('startTime', new Date(formData.startTime).getTime().toString());
+      data.append('endTime', new Date(formData.endTime).getTime().toString());
 
-      if (formData.image) {
-        data.append('image', formData.image);
-      } else {
-        throw new Error('Auction image is required.');
-      }
+      formData.images.forEach(image => {
+        data.append('images', image);
+      });
 
       const response = await fetch('/api/auctions', {
         method: 'POST',
@@ -71,16 +98,17 @@ const AddAuctionForm: React.FC<AddAuctionFormProps> = ({ onClose, onAuctionAdded
       }
 
       setSuccess('Auction created successfully!');
-      setFormData({ // Reset form
+      setFormData({
         name: '',
         description: '',
-        image: null,
+        images: [],
         currentBid: '',
         minIncrement: '',
         startTime: new Date().toISOString().slice(0, 16),
         endTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
       });
-      onAuctionAdded(); // Notify parent to refresh auction list
+      setImagePreviews([]);
+      onAuctionAdded();
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
     } finally {
@@ -90,7 +118,7 @@ const AddAuctionForm: React.FC<AddAuctionFormProps> = ({ onClose, onAuctionAdded
 
   return (
     <div className="fixed inset-0 bg-zinc-950 bg-opacity-80 flex items-center justify-center z-50">
-      <div className="bg-zinc-900 p-8 rounded-lg shadow-xl w-full max-w-lg border border-zinc-800">
+      <div className="bg-zinc-900 p-8 rounded-lg shadow-xl w-full max-w-lg border border-zinc-800 max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold text-white mb-6">Create New Auction</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -146,12 +174,14 @@ const AddAuctionForm: React.FC<AddAuctionFormProps> = ({ onClose, onAuctionAdded
             </div>
           </div>
           <div>
-            <label htmlFor="image" className="block text-sm font-medium text-zinc-400">Auction Image</label>
+            <label htmlFor="images" className="block text-sm font-medium text-zinc-400">Auction Images</label>
             <input
               type="file"
-              id="image"
-              name="image"
-              onChange={handleChange}
+              id="images"
+              name="images"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
               className="mt-1 block w-full text-white
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-md file:border-0
@@ -160,6 +190,22 @@ const AddAuctionForm: React.FC<AddAuctionFormProps> = ({ onClose, onAuctionAdded
                 hover:file:bg-blue-600"
               required
             />
+            {imagePreviews.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative">
+                    <img src={preview} alt={`Preview ${index + 1}`} className="h-20 w-20 object-cover rounded-md" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

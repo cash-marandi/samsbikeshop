@@ -5,7 +5,7 @@ export interface IProduct extends Document {
   name: string;
   description: string;
   price: number;
-  image: string;
+  images: string[];
   type: ProductType;
   brand: string;
   isSold: boolean;
@@ -18,7 +18,7 @@ const ProductSchema: Schema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
-  image: { type: String, required: true },
+  images: [{ type: String, required: true }],
   type: { type: String, enum: Object.values(ProductType), required: true },
   brand: { type: String, required: true },
   isSold: { type: Boolean, default: false },
@@ -29,7 +29,13 @@ const ProductSchema: Schema = new Schema({
   timestamps: true,
 });
 
-// Indexes for performance
+ProductSchema.virtual('image').get(function(this: IProduct) {
+  return this.images && this.images.length > 0 ? this.images[0] : '';
+});
+
+ProductSchema.set('toJSON', { virtuals: true });
+ProductSchema.set('toObject', { virtuals: true });
+
 ProductSchema.index({ isSold: 1 });
 ProductSchema.index({ type: 1 });
 ProductSchema.index({ brand: 1 });

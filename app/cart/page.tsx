@@ -75,9 +75,9 @@ export default function CartPage() {
               <span>Total</span>
               <span>R{total.toFixed(2)}</span>
             </div>
-            <button className="w-full mt-6 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors">
+            <Link href="/checkout" className="w-full mt-6 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors block text-center">
               Proceed to Checkout
-            </button>
+            </Link>
             <button 
               onClick={clearCart}
               className="w-full mt-4 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold rounded-lg transition-colors"

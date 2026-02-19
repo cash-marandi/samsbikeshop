@@ -14,7 +14,7 @@ cloudinary.config({
 
 // Helper function to validate product data for POST
 function validateProductData(data: any) {
-  const { name, description, price, image, type, brand, stock } = data;
+  const { name, description, price, images, type, brand, stock } = data;
 
   if (!name || typeof name !== 'string' || name.trim() === '') {
     return { isValid: false, message: 'Name is required and must be a non-empty string.' };
@@ -25,8 +25,8 @@ function validateProductData(data: any) {
   if (typeof price !== 'number' || price <= 0) {
     return { isValid: false, message: 'Price is required and must be a positive number.' };
   }
-  if (!image || typeof image !== 'string' || image.trim() === '') {
-    return { isValid: false, message: 'Image URL is required and must be a non-empty string.' };
+  if (!images || !Array.isArray(images) || images.length === 0) {
+    return { isValid: false, message: 'At least one image is required.' };
   }
   if (!Object.values(ProductType).includes(type)) {
     return { isValid: false, message: `Invalid product type. Must be one of: ${Object.values(ProductType).join(', ')}.` };
@@ -95,12 +95,12 @@ function validatePartialProductData(data: any) {
       updates.brand = data.brand;
     }
   }
-  if (data.image !== undefined) {
-    if (typeof data.image !== 'string' || data.image.trim() === '') {
+  if (data.images !== undefined) {
+    if (!Array.isArray(data.images) || data.images.length === 0) {
       isValid = false;
-      message = 'Image URL must be a non-empty string.';
+      message = 'At least one image is required.';
     } else {
-      updates.image = data.image;
+      updates.images = data.images;
     }
   }
 
@@ -123,38 +123,45 @@ export async function POST(req: NextRequest) {
     const type = formData.get('type') as ProductType;
     const brand = formData.get('brand') as string;
     const stock = parseInt(formData.get('stock') as string);
-    const imageFile = formData.get('image') as File;
 
-    let imageUrl: string | undefined;
+    const imageFiles = formData.getAll('images') as File[];
+    const imageUrls: string[] = [];
 
-    if (imageFile && imageFile.size > 0) {
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+    if (imageFiles.length === 0) {
+      return NextResponse.json({ message: 'At least one image is required.' }, { status: 400 });
+    }
 
-      // Upload stream to Cloudinary
-      const uploadResult: any = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'samsbikeshop_products' }, // Optional: organize uploads in a folder
-          (error, result) => {
-            if (error) {
-              console.error('Cloudinary upload error:', error);
-              return reject(new Error('Failed to upload image to Cloudinary.'));
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const uploadResult: any = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'samsbikeshop_products' },
+            (error, result) => {
+              if (error) {
+                console.error('Cloudinary upload error:', error);
+                return reject(new Error('Failed to upload image to Cloudinary.'));
+              }
+              resolve(result);
             }
-            resolve(result);
-          }
-        );
-        uploadStream.end(buffer);
-      });
-      imageUrl = uploadResult.secure_url;
-    } else {
-      return NextResponse.json({ message: 'Image file is required.' }, { status: 400 });
+          );
+          uploadStream.end(buffer);
+        });
+        imageUrls.push(uploadResult.secure_url);
+      }
+    }
+
+    if (imageUrls.length === 0) {
+      return NextResponse.json({ message: 'Failed to upload images.' }, { status: 400 });
     }
 
     const productData = {
-      name, description, price, image: imageUrl, type, brand, stock,
-      isSold: false, // Default value
-      isSpecial: false, // Default value
-      discount: 0, // Default value
+      name, description, price, images: imageUrls, type, brand, stock,
+      isSold: false,
+      isSpecial: false,
+      discount: 0,
     };
 
     const { isValid, message } = validateProductData(productData);
@@ -211,35 +218,47 @@ export async function PATCH(req: NextRequest) {
 
     const formData = await req.formData();
     const updates: { [key: string]: any } = {};
-    let imageUrl: string | undefined;
 
-    // Process image file if provided
-    const imageFile = formData.get('image') as File;
-    if (imageFile && imageFile.size > 0) {
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      const uploadResult: any = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'samsbikeshop_products' },
-          (error, result) => {
-            if (error) {
-              console.error('Cloudinary product image update error:', error);
-              return reject(new Error('Failed to upload new image to Cloudinary.'));
-            }
-            resolve(result);
-          }
-        );
-        uploadStream.end(buffer);
-      });
-      imageUrl = uploadResult.secure_url;
-      updates.image = imageUrl; // Add new image URL to updates
-    } else if (formData.has('image') && formData.get('image') === '') {
-      // If 'image' field is explicitly empty, user intends to remove existing image
-      updates.image = '';
+    const existingImagesStr = formData.get('existingImages') as string;
+    let existingImages: string[] = [];
+    if (existingImagesStr) {
+      try {
+        existingImages = JSON.parse(existingImagesStr);
+      } catch (e) {
+        existingImages = [];
+      }
     }
 
-    // Process other fields
+    const imageFiles = formData.getAll('images') as File[];
+    const newImageUrls: string[] = [];
+
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const uploadResult: any = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'samsbikeshop_products' },
+            (error, result) => {
+              if (error) {
+                console.error('Cloudinary product image update error:', error);
+                return reject(new Error('Failed to upload new image to Cloudinary.'));
+              }
+              resolve(result);
+            }
+          );
+          uploadStream.end(buffer);
+        });
+        newImageUrls.push(uploadResult.secure_url);
+      }
+    }
+
+    const allImages = [...existingImages, ...newImageUrls];
+    if (allImages.length > 0) {
+      updates.images = allImages;
+    }
+
     const fieldsToProcess = ['name', 'description', 'price', 'type', 'brand', 'stock', 'isSold', 'isSpecial', 'discount'];
     for (const field of fieldsToProcess) {
       const value = formData.get(field);
@@ -249,14 +268,13 @@ export async function PATCH(req: NextRequest) {
         } else if (field === 'stock') {
           updates[field] = parseInt(value as string);
         } else if (field === 'isSold' || field === 'isSpecial') {
-          updates[field] = value === 'true'; // Convert string 'true'/'false' to boolean
+          updates[field] = value === 'true';
         } else {
           updates[field] = value;
         }
       }
     }
 
-    // Validate partial updates
     const { isValid, message, updates: validatedUpdates } = validatePartialProductData(updates);
     if (!isValid) {
       return NextResponse.json({ message }, { status: 400 });
@@ -265,7 +283,7 @@ export async function PATCH(req: NextRequest) {
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       { $set: validatedUpdates },
-      { new: true, runValidators: true } // Return the updated document and run schema validators
+      { new: true, runValidators: true }
     );
 
     if (!updatedProduct) {

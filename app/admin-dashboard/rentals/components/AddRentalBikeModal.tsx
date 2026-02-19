@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { useCart } from '@/app/context/CartContext'; // For showToast
+import { useCart } from '@/app/context/CartContext';
 
 interface AddRentalBikeModalProps {
   isOpen: boolean;
@@ -14,19 +14,33 @@ export default function AddRentalBikeModal({ isOpen, onClose, onBikeAdded }: Add
   const [type, setType] = useState('');
   const [pricePerDay, setPricePerDay] = useState<number | string>('');
   const [isAvailable, setIsAvailable] = useState(true);
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file)); // Create a preview URL
-    } else {
-      setImage(null);
-      setImagePreview(null);
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setImages(prev => [...prev, ...fileArray]);
+      
+      const newPreviews: string[] = [];
+      fileArray.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newPreviews.push(reader.result as string);
+          if (newPreviews.length === fileArray.length) {
+            setImagePreviews(prev => [...prev, ...newPreviews]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const removeImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,14 +58,15 @@ export default function AddRentalBikeModal({ isOpen, onClose, onBikeAdded }: Add
     formData.append('type', type);
     formData.append('pricePerDay', String(pricePerDay));
     formData.append('isAvailable', String(isAvailable));
-    if (image) {
-      formData.append('image', image);
-    }
+    
+    images.forEach(image => {
+      formData.append('images', image);
+    });
 
     try {
       const response = await fetch('/api/rentals', {
         method: 'POST',
-        body: formData, // No Content-Type header needed for FormData
+        body: formData,
       });
 
       const result = await response.json();
@@ -62,15 +77,14 @@ export default function AddRentalBikeModal({ isOpen, onClose, onBikeAdded }: Add
 
       showToast('Rental bike added successfully!');
       onBikeAdded();
-      onClose(); // Close modal on success
+      onClose();
 
-      // Reset form
       setName('');
       setType('');
       setPricePerDay('');
       setIsAvailable(true);
-      setImage(null);
-      setImagePreview(null);
+      setImages([]);
+      setImagePreviews([]);
     } catch (err: any) {
       showToast(err.message || 'Error adding rental bike.');
     } finally {
@@ -82,7 +96,7 @@ export default function AddRentalBikeModal({ isOpen, onClose, onBikeAdded }: Add
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center">
-      <div className="relative p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+      <div className="relative p-5 border w-full max-w-lg shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Add New Rental Bike</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -124,17 +138,29 @@ export default function AddRentalBikeModal({ isOpen, onClose, onBikeAdded }: Add
           </div>
 
           <div>
-            <label htmlFor="image" className="block text-sm font-medium text-gray-700">Bike Image</label>
+            <label htmlFor="images" className="block text-sm font-medium text-gray-700">Bike Images</label>
             <input
               type="file"
-              id="image"
+              id="images"
+              multiple
               accept="image/*"
               className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
               onChange={handleImageChange}
             />
-            {imagePreview && (
-              <div className="mt-2">
-                <img src={imagePreview} alt="Image Preview" className="h-20 w-20 object-cover rounded-md" />
+            {imagePreviews.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative">
+                    <img src={preview} alt={`Preview ${index + 1}`} className="h-20 w-20 object-cover rounded-md" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>

@@ -4,7 +4,6 @@ import RentalBike from '@/models/RentalBike';
 import mongoose from 'mongoose';
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary (ensure this is done once, e.g., globally or in a util)
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -12,7 +11,6 @@ cloudinary.config({
   secure: true,
 });
 
-// GET a single rental bike by ID
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect();
   const { id } = await params;
@@ -33,7 +31,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-// PATCH (Update) a single rental bike by ID
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect();
   const { id } = await params;
@@ -49,8 +46,41 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const type = formData.get('type') as string | null;
     const pricePerDay = formData.get('pricePerDay');
     const isAvailable = formData.get('isAvailable');
-    const imageFile = formData.get('image') as File | null;
-    const existingImage = formData.get('existingImage') as string | null; // For keeping current image if no new one
+
+    const existingImagesStr = formData.get('existingImages') as string | null;
+    let existingImages: string[] = [];
+    if (existingImagesStr) {
+      try {
+        existingImages = JSON.parse(existingImagesStr);
+      } catch (e) {
+        existingImages = [];
+      }
+    }
+
+    const imageFiles = formData.getAll('images') as File[];
+    const newImageUrls: string[] = [];
+
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const uploadResult: any = await new Promise((resolve: any, reject: any) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'samsbikeshop_rentals' },
+            (error: any, result: any) => {
+              if (error) {
+                reject(new Error('Failed to upload new rental image to Cloudinary.'));
+              } else {
+                resolve(result);
+              }
+            }
+          );
+          uploadStream.end(buffer);
+        });
+        newImageUrls.push(uploadResult.secure_url);
+      }
+    }
 
     const updateFields: { [key: string]: any } = {};
     if (name) updateFields.name = name;
@@ -58,41 +88,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (pricePerDay) updateFields.pricePerDay = parseFloat(pricePerDay as string);
     if (isAvailable !== null) updateFields.isAvailable = isAvailable === 'true';
 
-    let imageUrl: string | undefined;
-
-    // Handle image update
-    if (imageFile && imageFile.size > 0) {
-      // Upload new image to Cloudinary
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      const uploadResult: any = await new Promise((resolve: any, reject: any) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'samsbikeshop_rentals' },
-          (error: any, result: any) => {
-            if (error) {
-              reject(new Error('Failed to upload new rental image to Cloudinary.'));
-            } else {
-              resolve(result);
-            }
-          }
-        );
-        uploadStream.end(buffer);
-      });
-      imageUrl = uploadResult.secure_url;
-      updateFields.image = imageUrl;
-    } else if (existingImage) {
-      // Keep existing image if no new file is provided but existing path is sent
-      updateFields.image = existingImage;
-    } else if (formData.has('image') && imageFile?.size === 0) {
-        // If an empty file input was sent, it means the user cleared the image
-        updateFields.image = '';
+    const allImages = [...existingImages, ...newImageUrls];
+    if (allImages.length > 0) {
+      updateFields.images = allImages;
     }
     
     const updatedRentalBike = await RentalBike.findByIdAndUpdate(
       id,
       { $set: updateFields },
-      { new: true, runValidators: true } // Return updated doc and run schema validators
+      { new: true, runValidators: true }
     );
 
     if (!updatedRentalBike) {
@@ -106,7 +110,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   }
 }
 
-// DELETE a single rental bike by ID
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect();
   const { id } = await params;
