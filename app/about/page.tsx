@@ -90,7 +90,7 @@ export default function AboutPage() {
       {/* Our Services Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <h2 className="text-4xl font-bold uppercase tracking-tight mb-12 text-center">Our Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="bg-white p-8 rounded-lg border border-gray-300 text-center">
             <h3 className="text-xl font-bold mb-4 text-orange-500">Maintenance & Service</h3>
             <p className="text-gray-700">Expert care for all types of bicycles, from routine tune-ups to complex repairs, ensuring your ride is always in peak condition.</p>
@@ -98,6 +98,14 @@ export default function AboutPage() {
           <div className="bg-white p-8 rounded-lg border border-gray-300 text-center">
             <h3 className="text-xl font-bold mb-4 text-orange-500">Sales & Custom Builds</h3>
             <p className="text-gray-700">Discover a wide range of new and pre-owned bicycles, parts, and accessories. We also offer custom build services to create your dream bike.</p>
+          </div>
+          <div className="bg-white p-8 rounded-lg border border-gray-300 text-center ring-2 ring-orange-500">
+            <h3 className="text-xl font-bold mb-4 text-orange-500">Mobile Repair Service</h3>
+            <p className="text-gray-700">Can&apos;t come to us? Our fully-equipped mobile workshop van comes to you! Perfect for busy professionals and families throughout Soweto and Johannesburg.</p>
+          </div>
+          <div className="bg-white p-8 rounded-lg border border-gray-300 text-center ring-2 ring-orange-500">
+            <h3 className="text-xl font-bold mb-4 text-orange-500">Bike Pickup & Delivery</h3>
+            <p className="text-gray-700">We&apos;ll pick up your bike, service it at our workshop, and deliver it back to you. Hassle-free bike maintenance at your convenience.</p>
           </div>
           <div className="bg-white p-8 rounded-lg border border-gray-300 text-center">
             <h3 className="text-xl font-bold mb-4 text-orange-500">Bicycle Rentals</h3>

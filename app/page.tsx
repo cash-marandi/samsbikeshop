@@ -94,7 +94,7 @@ export default function HomePage() {
               <span className="text-orange-500">RIDE.</span>
             </h1>
             <p className="text-xl text-gray-600 mb-10 max-w-lg">
-              Premium cycles, expert repairs, and real-time auctions. Your ultimate cycling destination since 1998.
+              Premium cycles, expert repairs, and real-time auctions. Mobile repair services and bike pickup available. Your ultimate cycling destination since 1998.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/shop" className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm">
@@ -113,7 +113,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { title: 'Rentals', desc: 'Premium bikes for any terrain.', icon: '🚲', href: '/rentals' },
-            { title: 'Repairs', desc: 'Certified master technicians.', icon: '🔧', href: '/repairs' },
+            { title: 'Repairs', desc: 'Certified technicians. Mobile service available.', icon: '🔧', href: '/repairs' },
             { title: 'Auctions', desc: 'Rare gear at the best prices.', icon: '⏱️', href: '/auctions' },
           ].map((item) => (
             <Link key={item.title} href={item.href} className="group p-8 bg-white border-2 border-gray-200 hover:border-orange-500">
@@ -218,15 +218,18 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="bg-gray-100 p-12 text-center border-2 border-gray-200">
           <h2 className="text-4xl font-bold uppercase mb-6 text-gray-900">Keep Your Ride Pristine.</h2>
-          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-            Ensure your bicycle performs at its best with our expert maintenance and repair services. Book your service appointment today!
+          <p className="text-xl text-gray-600 mb-6 max-w-3xl mx-auto">
+            Ensure your bicycle performs at its best with our expert maintenance and repair services. 
+          </p>
+          <p className="text-lg text-gray-700 mb-10 max-w-3xl mx-auto">
+            <span className="font-bold text-orange-600">Can&apos;t come to us? We&apos;ll come to you!</span> Our mobile repair team can fix your bike at your home or office, or we can pick up your bike and deliver it back when it&apos;s ready.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/contact" className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm">
-              Book a Service Now
+            <Link href="/repairs" className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm">
+              Book a Service
             </Link>
-            <Link href="/rentals" className="px-8 py-4 bg-gray-800 hover:bg-gray-900 text-white font-bold text-sm">
-              Explore Rentals
+            <Link href="/contact" className="px-8 py-4 bg-gray-800 hover:bg-gray-900 text-white font-bold text-sm">
+              Request Mobile Repair
             </Link>
           </div>
         </div>
@@ -298,14 +301,17 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="bg-gray-100 p-12 border-2 border-gray-200">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold uppercase mb-6 text-gray-900">Book Your Service or Get in Touch!</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Ready to give your bike the expert care it deserves? Use the form below to book a service. Have questions? We're here to help!
+            <h2 className="text-4xl font-bold uppercase mb-4 text-gray-900">Book Your Service or Get in Touch!</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
+              Ready to give your bike the expert care it deserves? Use the form below to book a service.
+            </p>
+            <p className="text-lg text-orange-600 font-semibold max-w-3xl mx-auto">
+              🚐 Mobile Repair Available - We come to you or pick up your bike!
             </p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Information */}
-            <div className="space-y-10">
+            <div className="space-y-8">
               <div className="flex items-start gap-6">
                 <div className="w-12 h-12 bg-orange-500 rounded flex items-center justify-center text-white flex-shrink-0">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -315,7 +321,9 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold uppercase text-gray-500 mb-2">Workshop Location</h4>
-                  <p className="text-lg font-bold text-gray-900">128 Velocity Ave, Pedal City, PC 55420</p>
+                  <p className="text-lg font-bold text-gray-900">2057 Parsley Street</p>
+                  <p className="text-base text-gray-700">R558 Main Road, Silver Leaf</p>
+                  <p className="text-base text-gray-700">Protea Glen, Soweto, Gauteng</p>
                 </div>
               </div>
 
@@ -340,7 +348,21 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold uppercase text-gray-500 mb-2">Direct Line</h4>
-                  <p className="text-lg font-bold text-orange-500">+1 (888) RIDE-NOW</p>
+                  <p className="text-lg font-bold text-orange-500">+27 (0) 11 123 4567</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-6">
+                <div className="w-12 h-12 bg-orange-500 rounded flex items-center justify-center text-white flex-shrink-0">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase text-gray-500 mb-2">Mobile & Pickup Service</h4>
+                  <p className="text-base font-bold text-gray-900">We come to you!</p>
+                  <p className="text-sm text-gray-700">Or we can pick up your bike and deliver it back when ready.</p>
+                  <Link href="/repairs" className="text-sm text-orange-600 hover:text-orange-700 font-medium">Book Mobile Repair →</Link>
                 </div>
               </div>
             </div>

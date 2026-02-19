@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   
   try {
     const body = await req.json();
-    const { referenceNumber, customer, items, total, paymentMethod } = body;
+    const { referenceNumber, userId, customer, items, total, paymentMethod } = body;
 
     if (!referenceNumber || !customer || !items || total === undefined) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
 
     const order = new Order({
       referenceNumber,
+      userId,
       customer,
       items,
       total,
@@ -92,15 +93,20 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { referenceNumber, status } = body;
+    const { referenceNumber, status, trackingNumber, notes } = body;
 
-    if (!referenceNumber || !status) {
-      return NextResponse.json({ message: 'Reference number and status are required' }, { status: 400 });
+    if (!referenceNumber) {
+      return NextResponse.json({ message: 'Reference number is required' }, { status: 400 });
     }
+
+    const updateData: Record<string, unknown> = {};
+    if (status) updateData.status = status;
+    if (trackingNumber !== undefined) updateData.trackingNumber = trackingNumber;
+    if (notes !== undefined) updateData.notes = notes;
 
     const order = await Order.findOneAndUpdate(
       { referenceNumber },
-      { status },
+      { $set: updateData },
       { new: true }
     );
 

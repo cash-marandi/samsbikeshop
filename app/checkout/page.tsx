@@ -55,6 +55,7 @@ export default function CheckoutPage() {
     try {
       const orderData = {
         referenceNumber: ref,
+        userId: session?.user?.id,
         customer: customerDetails,
         items: items.map(item => ({
           productId: item.product._id || item.product.id,

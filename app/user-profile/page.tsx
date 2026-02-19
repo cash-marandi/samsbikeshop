@@ -129,6 +129,12 @@ export default function UserProfilePage() {
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Account Settings</h3>
               <nav className="space-y-2">
+                <Link href="/user-profile/orders" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                  My Orders
+                </Link>
+                <Link href="/user-profile/bookings" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                  My Bookings
+                </Link>
                 <Link href="/user-profile/edit-profile" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                   Edit Profile
                 </Link>

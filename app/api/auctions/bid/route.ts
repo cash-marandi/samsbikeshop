@@ -49,6 +49,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Auction is not live' }, { status: 400 });
     }
 
+    const FIVE_MINUTES = 5 * 60 * 1000;
+    const SIXTY_SECONDS = 60 * 1000;
+    const timeRemaining = auction.endTime.getTime() - now;
+    let auctionExtended = false;
+
+    if (timeRemaining <= FIVE_MINUTES && timeRemaining > 0) {
+      auction.endTime = new Date(auction.endTime.getTime() + SIXTY_SECONDS);
+      auctionExtended = true;
+    }
+
     const currentHighestBidder = auction.bidHistory.length > 0
       ? auction.bidHistory[auction.bidHistory.length - 1].user.toString()
       : null;
@@ -90,7 +100,7 @@ export async function POST(req: Request) {
       : null;
 
     auction.bidHistory.push(newBid);
-    auction.currentBid = finalBidAmount; // Update currentBid with finalBidAmount
+    auction.currentBid = finalBidAmount;
 
     await auction.save();
 
@@ -99,6 +109,9 @@ export async function POST(req: Request) {
         model: 'User',
         select: 'name'
     });
+
+    const auctionData = populatedAuction.toObject();
+    (auctionData as Record<string, unknown>).auctionExtended = auctionExtended;
 
     // --- Socket.IO Emission via HTTP Endpoint ---
     const host = req.headers.get('host');
@@ -113,7 +126,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         event: 'bidUpdated',
         room: auctionId,
-        data: populatedAuction, // Send the updated auction object
+        data: { ...auctionData, auctionExtended },
       }),
     });
 
@@ -130,7 +143,7 @@ export async function POST(req: Request) {
         });
     }
 
-    return NextResponse.json(populatedAuction);
+    return NextResponse.json({ ...auctionData, auctionExtended });
   } catch (error) {
     console.error('Error placing bid:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
