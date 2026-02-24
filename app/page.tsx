@@ -130,7 +130,7 @@ export default function HomePage() {
         <div className="text-center max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold uppercase mb-4 text-gray-900">Our Passion for Cycling</h2>
           <p className="text-xl text-gray-600 leading-relaxed">
-            Founded in 1998 by Sam Henderson, Sams Bike Shop has grown from a humble garage setup to the region's premier hub for performance cycling and elite mechanical service. We believe a bike is more than just a machine; it's a vehicle for freedom, competition, and self-discovery.
+            Founded in 2008 by Samuel Maswanganyi, Sams Bike Shop has grown from a humble garage setup to the region's premier hub for performance cycling and elite mechanical service. We believe a bike is more than just a machine; it's a vehicle for freedom, competition, and self-discovery.
           </p>
           <Link href="/about" className="mt-8 inline-block px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm">
             Learn More About Us
