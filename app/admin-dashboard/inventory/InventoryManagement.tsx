@@ -114,7 +114,10 @@ export function InventoryManagement() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium">
+        <button 
+          onClick={() => window.location.href = '/admin-dashboard/add-product'}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium"
+        >
           Add New Product
         </button>
       </div>
