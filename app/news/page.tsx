@@ -1,155 +1,57 @@
+import type { Metadata } from 'next'
+import { BreadcrumbJsonLd } from '../components/JsonLd'
+import { Breadcrumbs } from '../components/Breadcrumbs'
+import NewsPageContent from './NewsPageContent'
 
-'use client';
-import React, { useState, useEffect } from 'react';
-import { NewsPost } from '../types';
+export const metadata: Metadata = {
+  title: "Cycling News & Updates | Sam's Bike Shop - Soweto",
+  description: "Stay updated with the latest cycling news, gear reviews, and community events from Sam's Bike Shop in Soweto, Gauteng. Workshop updates and local racing news.",
+  keywords: "cycling news, bike news, gear reviews, soweto cycling, johannesburg bike news, cycling events gauteng",
+  openGraph: {
+    title: "Cycling News & Updates | Sam's Bike Shop",
+    description: "Latest cycling news, gear reviews, and community events in Soweto, Gauteng.",
+    url: "https://samsbikeshop.co.za/news",
+    siteName: "Sam's Bike Shop",
+    type: "website",
+  },
+}
 
-export default function NewsPage() {
-  const [newsPosts, setNewsPosts] = useState<NewsPost[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
+async function getNewsPosts() {
+  try {
+    const res = await fetch('http://localhost:3000/api/news', { next: { revalidate: 3600 } })
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.newsPosts || []
+  } catch { return [] }
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [newsResponse, categoriesResponse] = await Promise.all([
-          fetch('/api/news'),
-          fetch('/api/categories')
-        ]);
+async function getCategories() {
+  try {
+    const res = await fetch('http://localhost:3000/api/categories', { next: { revalidate: 3600 } })
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.categories || []
+  } catch { return [] }
+}
 
-        if (newsResponse.ok) {
-          const newsData = await newsResponse.json();
-          setNewsPosts(newsData.newsPosts || []);
-        }
-
-        if (categoriesResponse.ok) {
-          const categoriesData = await categoriesResponse.json();
-          setCategories(categoriesData.categories || []);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleNewsletterSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    try {
-      const response = await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'news-page' }),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert(result.message);
-        setEmail('');
-      } else {
-        alert(result.error);
-      }
-    } catch (err: any) {
-      alert('Failed to subscribe to newsletter');
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-ink-900 text-xl">Loading news...</div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen text-red-500 text-xl">Error: {error}</div>
-    );
-  }
+export default async function NewsPage() {
+  const [newsPosts, categories] = await Promise.all([getNewsPosts(), getCategories()])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
-      <div className="mb-20 text-center">
-        <h1 className="text-6xl font-bold uppercase tracking-tighter mb-4">The Feed</h1>
-        <p className="text-ink-600 text-xl">Updates from the workshop, local racing news, and gear reviews.</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2 space-y-20">
-          {newsPosts.length > 0 ? newsPosts.map(post => (
-            <article key={post._id || post.id} className="group">
-              <div className="aspect-video rounded-xl overflow-hidden mb-8 border border-ink-200 relative">
-                <img src={post.image} className="w-full h-full object-cover" alt={post.title} />
-                <div className="absolute top-6 left-6 bg-flame-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
-                  Featured News
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-ink-600 mb-4">
-                <span className="text-flame-500">{post.date}</span>
-                <span className="w-1 h-1 rounded-full bg-ink-300"></span>
-                <span>By {post.author}</span>
-              </div>
-              <h2 className="text-4xl font-bold mb-6 group-hover:text-flame-500 leading-tight">
-                {post.title}
-              </h2>
-              <p className="text-ink-700 text-lg leading-relaxed mb-8">
-                {post.content} It's that time of year again when the trails dry out and the urge to ride becomes undeniable. Our team has been working around the clock...
-              </p>
-              <button className="text-flame-500 font-bold uppercase tracking-widest text-sm hover:text-flame-600 inline-flex items-center gap-2">
-                Continue Reading
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-              </button>
-            </article>
-          )) : (
-            <div className="text-center py-20 bg-white rounded-xl border border-ink-200">
-              <h2 className="text-2xl font-bold text-ink-600">No news posts found.</h2>
-              <p className="text-ink-700 mt-2">Check back later for updates!</p>
-            </div>
-          )}
-        </div>
-
-        <aside className="space-y-12">
-          <div className="bg-ink-100 p-8 rounded-xl border border-ink-200">
-            <h3 className="text-xl font-bold mb-6 uppercase tracking-tight">Categories</h3>
-            <ul className="space-y-4">
-              {categories.length > 0 ? categories.map(cat => (
-                <li key={cat._id} className="flex justify-between items-center group cursor-pointer">
-                  <span className="text-ink-700 group-hover:text-ink-900">{cat.name}</span>
-                  <span className="text-[10px] font-bold text-ink-600 bg-ink-300 px-2 py-0.5 rounded">{cat.newsCount}</span>
-                </li>
-              )) : (
-                ['Tech Tips', 'Shop Updates', 'Race Results', 'Gear Reviews', 'Community Events'].map(cat => (
-                  <li key={cat} className="flex justify-between items-center group cursor-pointer">
-                    <span className="text-ink-700 group-hover:text-ink-900">{cat}</span>
-                    <span className="text-[10px] font-bold text-ink-600 bg-ink-300 px-2 py-0.5 rounded">12</span>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-
-          <form onSubmit={handleNewsletterSubscribe} className="bg-flame-500 p-8 rounded-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-               <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-4 relative z-10">Join the Sams newsletter</h3>
-            <p className="text-white/90 mb-6 font-medium relative z-10">Get the first look at new stock and secret auction listings.</p>
-            <input 
-              type="email" 
-              placeholder="Your Email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 placeholder:text-white/70 mb-4 focus:outline-none" 
-            />
-            <button type="submit" className="w-full py-4 bg-white text-flame-500 font-bold rounded-xl hover:bg-ink-100">Subscribe</button>
-          </form>
-        </aside>
-      </div>
-    </div>
-  );
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: 'https://samsbikeshop.co.za' },
+          { name: 'News', url: 'https://samsbikeshop.co.za/news' },
+        ]}
+      />
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'News' },
+        ]}
+      />
+      <NewsPageContent newsPosts={newsPosts} categories={categories} />
+    </>
+  )
 }

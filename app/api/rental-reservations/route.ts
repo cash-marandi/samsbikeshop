@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import RentalReservation from '@/models/RentalReservation';
-import RentalBike from '@/models/RentalBike';
+require('@/models/RentalBike');
 
 export async function GET() {
   try {

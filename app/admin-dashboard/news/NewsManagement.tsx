@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface NewsPost {
   _id: string;
@@ -14,6 +15,7 @@ interface NewsPost {
 }
 
 export function NewsManagement() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [posts, setPosts] = useState<NewsPost[]>([]);
@@ -104,7 +106,10 @@ export function NewsManagement() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">News & Blog Management</h1>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium">
+        <button
+          onClick={() => router.push('/admin-dashboard/add-news')}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium"
+        >
           Create New Post
         </button>
       </div>

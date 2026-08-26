@@ -1,64 +1,19 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface NewsPost {
-  _id: string;
-  title: string;
-  content: string;
-  author: string;
-  image: string;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export default function EditNewsPage() {
+export default function AddNewsPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [post, setPost] = useState<NewsPost | null>(null);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [author, setAuthor] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const { searchParams } = new URL(window.location.href);
-        const postId = searchParams.get('id');
-        
-        if (!postId) {
-          setError('Post ID is required');
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch('/api/news');
-        if (response.ok) {
-          const data = await response.json();
-          const foundPost = data.newsPosts?.find((p: NewsPost) => p._id === postId);
-          
-          if (foundPost) {
-            setPost(foundPost);
-          } else {
-            setError('Post not found');
-          }
-        } else {
-          setError('Failed to fetch post');
-        }
-      } catch (error) {
-        setError('Error fetching post from database');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPost();
-  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -70,82 +25,46 @@ export default function EditNewsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!post) return;
-
     setSaving(true);
     setError(null);
     setSuccess(null);
 
     try {
       const formData = new FormData();
-      formData.append('title', post.title);
-      formData.append('content', post.content);
-      formData.append('author', post.author);
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('author', author);
       if (imageFile) {
         formData.append('image', imageFile);
       }
 
-      const response = await fetch(`/api/news/${post._id}`, {
-        method: 'PUT',
+      const response = await fetch('/api/news', {
+        method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
-        setSuccess('Post updated successfully!');
+        setSuccess('Post created successfully!');
         setTimeout(() => {
           router.push('/admin-dashboard');
         }, 2000);
       } else {
         const data = await response.json();
-        setError(data.message || 'Failed to update post');
+        setError(data.message || 'Failed to create post');
       }
     } catch (error) {
-      setError('Error updating post');
+      setError('Error creating post');
     } finally {
       setSaving(false);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-ink-50 flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-ink-200 border-t-flame-500 rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (error && !post) {
-    return (
-      <div className="min-h-screen bg-ink-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-premium p-8 max-w-md text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <button
-            onClick={() => router.push('/admin-dashboard')}
-            className="px-6 py-3 bg-ink-900 hover:bg-ink-800 text-white font-medium rounded-xl transition-all"
-          >
-            Back to Dashboard
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!post) {
-    return (
-      <div className="min-h-screen bg-ink-50 flex items-center justify-center">
-        <div className="text-ink-500">Loading post...</div>
-      </div>
-    );
-  }
-
-  const displayImage = imagePreview || post.image;
 
   return (
     <div className="min-h-screen bg-ink-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8">
         <div className="bg-white rounded-2xl shadow-premium border border-ink-100">
           <div className="px-8 py-6 border-b border-ink-100">
-            <h1 className="text-2xl font-display font-bold text-ink-900">Edit News Post</h1>
+            <h1 className="text-2xl font-display font-bold text-ink-900">Create New Post</h1>
           </div>
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
             {error && (
@@ -153,7 +72,7 @@ export default function EditNewsPage() {
                 <p className="text-red-600 text-sm">{error}</p>
               </div>
             )}
-            
+
             {success && (
               <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                 <p className="text-green-600 text-sm">{success}</p>
@@ -167,8 +86,8 @@ export default function EditNewsPage() {
               <input
                 type="text"
                 id="title"
-                value={post.title}
-                onChange={(e) => setPost({ ...post, title: e.target.value })}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="w-full px-4 py-3 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500 focus:border-transparent text-ink-900 bg-ink-50"
                 required
               />
@@ -181,8 +100,8 @@ export default function EditNewsPage() {
               <input
                 type="text"
                 id="author"
-                value={post.author}
-                onChange={(e) => setPost({ ...post, author: e.target.value })}
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
                 className="w-full px-4 py-3 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500 focus:border-transparent text-ink-900 bg-ink-50"
                 required
               />
@@ -194,9 +113,9 @@ export default function EditNewsPage() {
               </label>
               <textarea
                 id="content"
-                value={post.content}
-                onChange={(e) => setPost({ ...post, content: e.target.value })}
-                rows={12}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={14}
                 className="w-full px-4 py-3 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500 focus:border-transparent text-ink-900 bg-ink-50 resize-y"
                 required
               />
@@ -207,10 +126,10 @@ export default function EditNewsPage() {
                 Post Image
               </label>
               <div className="space-y-4">
-                {displayImage && (
-                  <img 
-                    src={displayImage} 
-                    alt={post.title} 
+                {imagePreview && (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
                     className="h-48 w-80 object-cover rounded-xl border border-ink-200"
                   />
                 )}
@@ -221,9 +140,6 @@ export default function EditNewsPage() {
                   onChange={handleImageUpload}
                   className="w-full px-4 py-3 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500 text-ink-900 bg-ink-50 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-flame-50 file:text-flame-700 hover:file:bg-flame-100"
                 />
-                {imageFile && (
-                  <p className="text-sm text-ink-500">New image selected: {imageFile.name}</p>
-                )}
               </div>
             </div>
 
@@ -241,7 +157,7 @@ export default function EditNewsPage() {
                 className="px-8 py-3 bg-flame-500 hover:bg-flame-600 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-glow transition-all disabled:opacity-50"
                 disabled={saving}
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? 'Publishing...' : 'Publish Post'}
               </button>
             </div>
           </form>

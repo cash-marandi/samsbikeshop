@@ -4,6 +4,7 @@ import RentalReservation from '@/models/RentalReservation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { v2 as cloudinary } from 'cloudinary';
+require('@/models/RentalBike');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,

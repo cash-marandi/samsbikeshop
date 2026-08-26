@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { StaggerContainer, StaggerItem } from './AnimatedSection';
+import { useRouter } from 'next/navigation';
 
 interface NewsPost {
   _id?: string;
@@ -26,8 +27,12 @@ const ArrowRightIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
 );
 
 export default function LatestNews({ newsPosts }: LatestNewsProps) {
-  const formatTimestamp = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString();
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
   };
 
   return (
@@ -51,8 +56,11 @@ export default function LatestNews({ newsPosts }: LatestNewsProps) {
 
         {newsPosts.length > 0 ? (
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6" staggerDelay={0.15}>
-            {newsPosts.map((post) => (
-              <StaggerItem key={post._id || post.id || Math.random().toString()}>
+            {newsPosts.map((post) => {
+              const postId = post._id || post.id;
+              return (
+              <StaggerItem key={postId || Math.random().toString()}>
+                <Link href={`/news/${postId}`}>
                 <motion.div
                   whileHover={{ y: -4 }}
                   className="group cursor-pointer bg-ink-50 rounded-2xl overflow-hidden border border-ink-200/50 shadow-soft hover:shadow-large transition-all duration-300"
@@ -74,16 +82,18 @@ export default function LatestNews({ newsPosts }: LatestNewsProps) {
                   </div>
                   <div className="p-6">
                     <span className="text-flame-500 text-xs font-bold uppercase tracking-wider">
-                      {formatTimestamp(new Date(post.date).getTime())}
+                      {formatDate(post.date)}
                     </span>
                     <h3 className="font-display text-xl font-bold mt-2 mb-3 text-ink-900 group-hover:text-flame-600 transition-colors">
                       {post.title}
                     </h3>
-                    <p className="text-ink-500 leading-relaxed line-clamp-3">{post.content}</p>
+                    <p className="text-ink-500 leading-relaxed line-clamp-3 whitespace-pre-line">{post.content}</p>
                   </div>
                 </motion.div>
+                </Link>
               </StaggerItem>
-            ))}
+              );
+            })}
           </StaggerContainer>
         ) : (
           <div className="text-center py-16 bg-ink-50 rounded-2xl border border-ink-200/50">
