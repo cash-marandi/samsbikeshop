@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 async function getProduct(id: string) {
   try {
-    const res = await fetch(`http://localhost:3000/api/products/${id}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/products/${id}`, { next: { revalidate: 3600 } });
     if (!res.ok) return null;
     return await res.json();
   } catch { return null; }
@@ -30,7 +30,7 @@ async function getProduct(id: string) {
 
 async function getReviews(id: string) {
   try {
-    const res = await fetch(`http://localhost:3000/api/products/${id}/reviews`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/products/${id}/reviews`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.reviews || [];

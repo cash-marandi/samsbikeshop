@@ -20,7 +20,7 @@ const PLACEHOLDER_IMAGE_PATH = '/file.svg'
 
 async function getTeamMembers() {
   try {
-    const res = await fetch('http://localhost:3000/api/team-members', { next: { revalidate: 3600 } })
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/team-members`, { next: { revalidate: 3600 } })
     if (!res.ok) return []
     const data = await res.json()
     return data.teamMembers || []

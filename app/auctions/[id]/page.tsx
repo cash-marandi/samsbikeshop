@@ -4,7 +4,7 @@ import { Breadcrumbs } from '../../components/Breadcrumbs';
 
 async function getAuction(id: string) {
   try {
-    const res = await fetch(`http://localhost:3000/api/auctions/${id}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auctions/${id}`, { next: { revalidate: 60 } });
     if (!res.ok) return null;
     const data = await res.json();
     const startTime = new Date(data.startTime).getTime();

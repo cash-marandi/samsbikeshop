@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 async function getNewsPosts() {
   try {
-    const res = await fetch('http://localhost:3000/api/news', { next: { revalidate: 3600 } })
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/news`, { next: { revalidate: 3600 } })
     if (!res.ok) return []
     const data = await res.json()
     return data.newsPosts || []
@@ -27,7 +27,7 @@ async function getNewsPosts() {
 
 async function getCategories() {
   try {
-    const res = await fetch('http://localhost:3000/api/categories', { next: { revalidate: 3600 } })
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/categories`, { next: { revalidate: 3600 } })
     if (!res.ok) return []
     const data = await res.json()
     return data.categories || []

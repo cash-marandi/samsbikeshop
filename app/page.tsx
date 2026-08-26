@@ -30,7 +30,7 @@ function getAuctionStatus(startTime: number, endTime: number): 'UPCOMING' | 'LIV
 
 async function getProducts() {
   try {
-    const res = await fetch('http://localhost:3000/api/products', { next: { revalidate: 3600 } });
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/products`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.products || [];
@@ -41,7 +41,7 @@ async function getProducts() {
 
 async function getAuctions() {
   try {
-    const res = await fetch('http://localhost:3000/api/auctions', { next: { revalidate: 3600 } });
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auctions`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();
     return (data.auctions || []).map((auction: any) => {
@@ -62,7 +62,7 @@ async function getAuctions() {
 
 async function getNewsPosts() {
   try {
-    const res = await fetch('http://localhost:3000/api/news', { next: { revalidate: 3600 } });
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/news`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.newsPosts || [];

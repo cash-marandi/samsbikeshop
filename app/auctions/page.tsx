@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 async function getAuctions() {
   try {
-    const res = await fetch('http://localhost:3000/api/auctions', { next: { revalidate: 60 } })
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auctions`, { next: { revalidate: 60 } })
     if (!res.ok) return []
     const data = await res.json()
     return data.auctions || []

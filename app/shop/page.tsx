@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 async function getProducts() {
   try {
-    const res = await fetch('http://localhost:3000/api/products', { next: { revalidate: 3600 } })
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/products`, { next: { revalidate: 3600 } })
     if (!res.ok) return []
     const data = await res.json()
     return data.products || []
