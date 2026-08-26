@@ -83,7 +83,7 @@ export default function UserProfilePage() {
 
   if (status === 'loading' || loadingUserData) {
     return (
-      <div className="max-w-md mx-auto py-24 px-4 text-center text-zinc-500">
+      <div className="max-w-md mx-auto py-24 px-4 text-center text-ink-500">
         Loading user profile...
       </div>
     );
@@ -104,18 +104,18 @@ export default function UserProfilePage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-ink-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-6 mb-6">
               <div className="text-center">
-                <div className="w-20 h-20 bg-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white">
+                <div className="w-20 h-20 bg-flame-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white">
                   {currentUser.name[0]}
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-1">{currentUser.name}</h2>
-                <p className="text-gray-600 text-sm mb-4">{currentUser.email}</p>
+                <h2 className="text-xl font-bold text-ink-900 mb-1">{currentUser.name}</h2>
+                <p className="text-ink-600 text-sm mb-4">{currentUser.email}</p>
                 <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
                   currentUser.isApprovedForAuction 
                     ? 'bg-green-100 text-green-800' 
@@ -127,21 +127,21 @@ export default function UserProfilePage() {
             </div>
             
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Account Settings</h3>
+              <h3 className="text-sm font-semibold text-ink-500 uppercase tracking-wider mb-4">Account Settings</h3>
               <nav className="space-y-2">
-                <Link href="/user-profile/orders" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                <Link href="/user-profile/orders" className="block px-3 py-2 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-100 hover:text-ink-900">
                   My Orders
                 </Link>
-                <Link href="/user-profile/bookings" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                <Link href="/user-profile/bookings" className="block px-3 py-2 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-100 hover:text-ink-900">
                   My Bookings
                 </Link>
-                <Link href="/user-profile/edit-profile" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                <Link href="/user-profile/edit-profile" className="block px-3 py-2 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-100 hover:text-ink-900">
                   Edit Profile
                 </Link>
-                <Link href="/user-profile/security-password" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                <Link href="/user-profile/security-password" className="block px-3 py-2 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-100 hover:text-ink-900">
                   Security & Password
                 </Link>
-                <Link href="/user-profile/payment-methods" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                <Link href="/user-profile/payment-methods" className="block px-3 py-2 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-100 hover:text-ink-900">
                   Payment Methods
                 </Link>
                 <Link href="/user-profile/delete-account" className="block px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 mt-4">
@@ -155,13 +155,13 @@ export default function UserProfilePage() {
           <div className="lg:col-span-3">
             {/* Tabs */}
             <div className="bg-white rounded-lg shadow mb-6">
-              <div className="border-b border-gray-200">
+              <div className="border-b border-ink-200">
                 <nav className="flex -mb-px">
                   <button
                     className={`py-4 px-6 text-sm font-medium border-b-2 ${
                       activeTab === 'ALL' 
-                        ? 'border-orange-500 text-orange-600' 
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        ? 'border-flame-500 text-flame-600' 
+                        : 'border-transparent text-ink-500 hover:text-ink-700 hover:border-ink-200'
                     }`}
                     onClick={() => setActiveTab('ALL')}
                   >
@@ -170,8 +170,8 @@ export default function UserProfilePage() {
                   <button
                     className={`py-4 px-6 text-sm font-medium border-b-2 ${
                       activeTab === 'LIKED' 
-                        ? 'border-orange-500 text-orange-600' 
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        ? 'border-flame-500 text-flame-600' 
+                        : 'border-transparent text-ink-500 hover:text-ink-700 hover:border-ink-200'
                     }`}
                     onClick={() => setActiveTab('LIKED')}
                   >
@@ -181,8 +181,8 @@ export default function UserProfilePage() {
                     <button
                       className={`py-4 px-6 text-sm font-medium border-b-2 ${
                         activeTab === 'MY_BIDS' 
-                          ? 'border-orange-500 text-orange-600' 
-                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                          ? 'border-flame-500 text-flame-600' 
+                          : 'border-transparent text-ink-500 hover:text-ink-700 hover:border-ink-200'
                       }`}
                       onClick={() => setActiveTab('MY_BIDS')}
                     >
@@ -197,16 +197,16 @@ export default function UserProfilePage() {
             <div className="bg-white rounded-lg shadow p-6">
               {activeTab === 'ALL' && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">My Active Bids</h3>
+                  <h3 className="text-lg font-semibold text-ink-900 mb-4">My Active Bids</h3>
                   <div className="space-y-4">
                     {userBids.length > 0 ? (
                       userBids.filter(auction => auction.status === 'LIVE' || auction.status === 'UPCOMING').map(auction => (
-                        <div key={auction.id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50">
+                        <div key={auction.id} className="border border-ink-200 rounded-lg p-4 flex justify-between items-center hover:bg-ink-50">
                           <div className="flex items-center space-x-4">
                             {auction.image && <img src={auction.image} alt={auction.name} className="w-16 h-16 object-cover rounded-lg" />}
                             <div>
-                              <p className="text-sm text-gray-600 mb-1">Auction: {auction.name}</p>
-                              <p className="font-semibold text-gray-900">Current Bid: R{auction.currentBid}</p>
+                              <p className="text-sm text-ink-600 mb-1">Auction: {auction.name}</p>
+                              <p className="font-semibold text-ink-900">Current Bid: R{auction.currentBid}</p>
                             </div>
                           </div>
                           <div className="text-right">
@@ -215,16 +215,16 @@ export default function UserProfilePage() {
                             }`}>
                               {auction.status === 'LIVE' ? 'LIVE' : 'UPCOMING'}
                             </span>
-                            <p className="text-xs text-gray-600 mt-1">
+                            <p className="text-xs text-ink-600 mt-1">
                               Your last bid: R{auction.bidHistory.find(bid => bid.user.id === currentUser.id)?.amount || 'N/A'}
                             </p>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-                        <p className="text-gray-500 mb-2">No active bids yet.</p>
-                        <Link href="/auctions" className="text-orange-600 hover:text-orange-700 font-medium">View live auctions →</Link>
+                      <div className="text-center py-12 border-2 border-dashed border-ink-200 rounded-lg">
+                        <p className="text-ink-500 mb-2">No active bids yet.</p>
+                        <Link href="/auctions" className="text-flame-600 hover:text-flame-700 font-medium">View live auctions →</Link>
                       </div>
                     )}
                   </div>
@@ -234,48 +234,48 @@ export default function UserProfilePage() {
               {activeTab === 'LIKED' && (
                 <>
                   <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">My Watchlist</h3>
+                    <h3 className="text-lg font-semibold text-ink-900 mb-4">My Watchlist</h3>
                     <div className="space-y-4">
                       {userWatchlist.length > 0 ? (
                         userWatchlist.map(auction => (
-                          <div key={auction.id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50">
+                          <div key={auction.id} className="border border-ink-200 rounded-lg p-4 flex justify-between items-center hover:bg-ink-50">
                             <div className="flex items-center space-x-4">
                               {auction.image && <img src={auction.image} alt={auction.name} className="w-16 h-16 object-cover rounded-lg" />}
                               <div>
-                                <p className="font-semibold text-gray-900">{auction.name}</p>
-                                <p className="text-sm text-gray-600">Current Bid: R{auction.currentBid}</p>
+                                <p className="font-semibold text-ink-900">{auction.name}</p>
+                                <p className="text-sm text-ink-600">Current Bid: R{auction.currentBid}</p>
                               </div>
                             </div>
                             <div className="text-right">
                               <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${
-                                auction.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                auction.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-ink-100 text-gray-800'
                               }`}>
                                 {auction.status === 'LIVE' ? 'LIVE' : auction.status}
                               </span>
-                              <Link href={`/auctions/${auction.id}`} className="block text-xs text-orange-600 hover:text-orange-700 font-medium mt-1">
+                              <Link href={`/auctions/${auction.id}`} className="block text-xs text-flame-600 hover:text-flame-700 font-medium mt-1">
                                 View →
                               </Link>
                             </div>
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-                          <p className="text-gray-500 mb-2">Your watchlist is empty.</p>
-                          <Link href="/auctions" className="text-orange-600 hover:text-orange-700 font-medium">Browse auctions →</Link>
+                        <div className="text-center py-12 border-2 border-dashed border-ink-200 rounded-lg">
+                          <p className="text-ink-500 mb-2">Your watchlist is empty.</p>
+                          <Link href="/auctions" className="text-flame-600 hover:text-flame-700 font-medium">Browse auctions →</Link>
                         </div>
                       )}
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Order History</h3>
+                    <h3 className="text-lg font-semibold text-ink-900 mb-4">Order History</h3>
                     <div className="space-y-4">
                       {currentUser.orderHistory && currentUser.orderHistory.length > 0 ? (
                         currentUser.orderHistory.map((id, i) => (
-                          <div key={i} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50">
+                          <div key={i} className="border border-ink-200 rounded-lg p-4 flex justify-between items-center hover:bg-ink-50">
                             <div>
-                              <p className="text-sm text-gray-600 mb-1">Order #883210</p>
-                              <p className="font-semibold text-gray-900">Premium Road Bike Component Group</p>
+                              <p className="text-sm text-ink-600 mb-1">Order #883210</p>
+                              <p className="font-semibold text-ink-900">Premium Road Bike Component Group</p>
                             </div>
                             <div className="text-right">
                               <p className="font-semibold text-green-600">$850.00</p>
@@ -286,9 +286,9 @@ export default function UserProfilePage() {
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-                          <p className="text-gray-500 mb-2">No orders found.</p>
-                          <Link href="/shop" className="text-orange-600 hover:text-orange-700 font-medium">Start shopping →</Link>
+                        <div className="text-center py-12 border-2 border-dashed border-ink-200 rounded-lg">
+                          <p className="text-ink-500 mb-2">No orders found.</p>
+                          <Link href="/shop" className="text-flame-600 hover:text-flame-700 font-medium">Start shopping →</Link>
                         </div>
                       )}
                     </div>
@@ -298,34 +298,34 @@ export default function UserProfilePage() {
 
               {activeTab === 'MY_BIDS' && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">All My Bids</h3>
+                  <h3 className="text-lg font-semibold text-ink-900 mb-4">All My Bids</h3>
                   <div className="space-y-4">
                     {userBids.length > 0 ? (
                       userBids.map(auction => (
-                        <div key={auction.id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50">
+                        <div key={auction.id} className="border border-ink-200 rounded-lg p-4 flex justify-between items-center hover:bg-ink-50">
                           <div className="flex items-center space-x-4">
                             {auction.image && <img src={auction.image} alt={auction.name} className="w-16 h-16 object-cover rounded-lg" />}
                             <div>
-                              <p className="font-semibold text-gray-900">{auction.name}</p>
-                              <p className="text-sm text-gray-600">Your last bid: R{auction.bidHistory.find(bid => bid.user.id === currentUser.id)?.amount || 'N/A'}</p>
+                              <p className="font-semibold text-ink-900">{auction.name}</p>
+                              <p className="text-sm text-ink-600">Your last bid: R{auction.bidHistory.find(bid => bid.user.id === currentUser.id)?.amount || 'N/A'}</p>
                             </div>
                           </div>
                           <div className="text-right">
                             <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${
-                              auction.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                              auction.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-ink-100 text-gray-800'
                             }`}>
                               {auction.status === 'LIVE' ? 'LIVE' : auction.status}
                             </span>
-                            <Link href={`/auctions/${auction.id}`} className="block text-xs text-orange-600 hover:text-orange-700 font-medium mt-1">
+                            <Link href={`/auctions/${auction.id}`} className="block text-xs text-flame-600 hover:text-flame-700 font-medium mt-1">
                               View →
                             </Link>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-                        <p className="text-gray-500 mb-2">You haven't placed any bids yet.</p>
-                        <Link href="/auctions" className="text-orange-600 hover:text-orange-700 font-medium">View live auctions →</Link>
+                      <div className="text-center py-12 border-2 border-dashed border-ink-200 rounded-lg">
+                        <p className="text-ink-500 mb-2">You haven't placed any bids yet.</p>
+                        <Link href="/auctions" className="text-flame-600 hover:text-flame-700 font-medium">View live auctions →</Link>
                       </div>
                     )}
                   </div>

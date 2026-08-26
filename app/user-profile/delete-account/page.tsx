@@ -13,7 +13,7 @@ export default function DeleteAccountPage() {
 
   if (status === 'loading') {
     return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-zinc-500">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-ink-500">
         Loading account deletion options...
       </div>
     );
@@ -47,11 +47,11 @@ export default function DeleteAccountPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-ink-50">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8">
         <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Delete Account</h1>
+          <div className="px-6 py-4 border-b border-ink-200">
+            <h1 className="text-2xl font-bold text-ink-900">Delete Account</h1>
           </div>
           <div className="p-6 space-y-6">
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -70,9 +70,9 @@ export default function DeleteAccountPage() {
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">What you will lose:</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
+            <div className="bg-ink-50 rounded-lg p-4">
+              <h4 className="font-medium text-ink-900 mb-2">What you will lose:</h4>
+              <ul className="text-sm text-ink-600 space-y-1">
                 <li>• Your profile information and preferences</li>
                 <li>• Order history and purchase records</li>
                 <li>• Active bids and auction participation</li>
@@ -89,17 +89,17 @@ export default function DeleteAccountPage() {
                 id="confirmDelete"
                 checked={confirmDelete}
                 onChange={(e) => setConfirmDelete(e.target.checked)}
-                className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                className="mt-1 h-4 w-4 bg-ink-50 text-red-600 focus:ring-red-500 border-ink-200 rounded"
               />
-              <label htmlFor="confirmDelete" className="text-sm text-gray-700">
+              <label htmlFor="confirmDelete" className="text-sm text-ink-700">
                 I understand the consequences and wish to permanently delete my account.
               </label>
             </div>
 
-            <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+            <div className="flex justify-end space-x-4 pt-4 border-t border-ink-200">
               <button
                 type="button"
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                className="px-6 py-2 border border-ink-200 rounded-lg text-ink-700 hover:bg-ink-50 font-medium transition-colors"
                 onClick={() => router.back()}
                 disabled={loading}
               >

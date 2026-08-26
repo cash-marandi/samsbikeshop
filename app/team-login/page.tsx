@@ -39,7 +39,7 @@ export default function TeamLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-zinc-100">
-      <div className="bg-zinc-900 p-8 rounded-lg shadow-lg w-full max-w-md border border-zinc-700">
+      <div className="bg-ink-900 p-8 rounded-lg shadow-lg w-full max-w-md border border-zinc-700">
         <h2 className="text-3xl font-bold text-center mb-6 text-blue-400">Team Login</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -49,7 +49,7 @@ export default function TeamLoginPage() {
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-zinc-100 placeholder-zinc-500"
+              className="w-full px-4 py-2 bg-ink-800 border border-zinc-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-zinc-100 placeholder-zinc-500"
               placeholder="team@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -63,7 +63,7 @@ export default function TeamLoginPage() {
             <input
               type="password"
               id="password"
-              className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-zinc-100 placeholder-zinc-500"
+              className="w-full px-4 py-2 bg-ink-800 border border-zinc-700 rounded-md focus:ring-blue-500 focus:border-blue-500 text-zinc-100 placeholder-zinc-500"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -79,12 +79,12 @@ export default function TeamLoginPage() {
             {loading ? 'Logging In...' : 'Login as Team Member'}
           </button>
         </form>
-        <p className="text-center text-sm text-zinc-400 mt-6">
+        <p className="text-center text-sm text-ink-400 mt-6">
           <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium">
             Login as Customer
           </Link>
         </p>
-        <p className="text-center text-sm text-zinc-400 mt-2">
+        <p className="text-center text-sm text-ink-400 mt-2">
           New team member?{' '}
           <Link href="/team-register/register-form" className="text-blue-400 hover:text-blue-300 font-medium">
             Register Here

@@ -1,5 +1,7 @@
 'use client';
+
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function ContactForm() {
   const [name, setName] = useState('');
@@ -31,7 +33,6 @@ export default function ContactForm() {
       const result = await response.json();
       if (response.ok) {
         setFormSuccess(true);
-        // Clear form
         setName('');
         setEmail('');
         setAppointmentDate('');
@@ -49,24 +50,45 @@ export default function ContactForm() {
   };
 
   return (
-    <form className="space-y-6" onSubmit={e => handleContactSubmit(e)}>
-      <div className="grid grid-cols-2 gap-6">
+    <form className="space-y-5" onSubmit={e => handleContactSubmit(e)}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase text-gray-500">Your Name</label>
-          <input type="text" className="w-full bg-white border-2 border-gray-300 px-4 py-3 focus:outline-none focus:border-orange-500" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} />
+          <label className="text-xs font-bold uppercase tracking-wider text-ink-500">Your Name</label>
+          <input 
+            type="text" 
+            className="w-full bg-ink-50 border border-ink-200 rounded-xl px-4 py-3 text-sm text-ink-900 placeholder-ink-400 focus:outline-none focus:border-flame-500 focus:ring-2 focus:ring-flame-500/20 transition-all" 
+            placeholder="John Doe" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+          />
         </div>
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase text-gray-500">Email Address</label>
-          <input type="email" className="w-full bg-white border-2 border-gray-300 px-4 py-3 focus:outline-none focus:border-orange-500" placeholder="john@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <label className="text-xs font-bold uppercase tracking-wider text-ink-500">Email Address</label>
+          <input 
+            type="email" 
+            className="w-full bg-ink-50 border border-ink-200 rounded-xl px-4 py-3 text-sm text-ink-900 placeholder-ink-400 focus:outline-none focus:border-flame-500 focus:ring-2 focus:ring-flame-500/20 transition-all" 
+            placeholder="john@domain.com" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+          />
         </div>
       </div>
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase text-gray-500">Appointment Date</label>
-        <input type="date" className="w-full bg-white border-2 border-gray-300 px-4 py-3 focus:outline-none focus:border-orange-500" value={appointmentDate} onChange={(e) => setAppointmentDate(e.target.value)} />
+        <label className="text-xs font-bold uppercase tracking-wider text-ink-500">Appointment Date</label>
+        <input 
+          type="date" 
+          className="w-full bg-ink-50 border border-ink-200 rounded-xl px-4 py-3 text-sm text-ink-900 focus:outline-none focus:border-flame-500 focus:ring-2 focus:ring-flame-500/20 transition-all" 
+          value={appointmentDate} 
+          onChange={(e) => setAppointmentDate(e.target.value)} 
+        />
       </div>
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase text-gray-500">Subject</label>
-        <select className="w-full bg-white border-2 border-gray-300 px-4 py-3 focus:outline-none focus:border-orange-500" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)}>
+        <label className="text-xs font-bold uppercase tracking-wider text-ink-500">Subject</label>
+        <select 
+          className="w-full bg-ink-50 border border-ink-200 rounded-xl px-4 py-3 text-sm text-ink-900 focus:outline-none focus:border-flame-500 focus:ring-2 focus:ring-flame-500/20 transition-all appearance-none" 
+          value={selectedSubject} 
+          onChange={(e) => setSelectedSubject(e.target.value)}
+        >
           <option value="Select an inquiry type">Select an inquiry type</option>
           <option value="Bike Sales">Bike Sales</option>
           <option value="Rental Booking">Rental Booking</option>
@@ -75,13 +97,32 @@ export default function ContactForm() {
         </select>
       </div>
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase text-gray-500">Your Message</label>
-        <textarea className="w-full bg-white border-2 border-gray-300 px-4 py-3 focus:outline-none focus:border-orange-500 min-h-[200px]" placeholder="How can we help you get back on the road?" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
+        <label className="text-xs font-bold uppercase tracking-wider text-ink-500">Your Message</label>
+        <textarea 
+          className="w-full bg-ink-50 border border-ink-200 rounded-xl px-4 py-3 text-sm text-ink-900 placeholder-ink-400 focus:outline-none focus:border-flame-500 focus:ring-2 focus:ring-flame-500/20 transition-all min-h-[180px] resize-none" 
+          placeholder="How can we help you get back on the road?" 
+          value={message} 
+          onChange={(e) => setMessage(e.target.value)}
+        />
       </div>
-      <button type="submit" className="w-full py-4 bg-orange-500 text-white font-bold hover:bg-orange-600" disabled={formSubmitted}>
+      <motion.button 
+        type="submit" 
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+        className="w-full py-4 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-xl transition-colors disabled:opacity-50 shadow-glow" 
+        disabled={formSubmitted}
+      >
         {formSubmitted ? 'Sending...' : 'Send Message'}
-      </button>
-      {formSuccess && <p className="text-green-600 text-center mt-4 font-medium">Message sent successfully!</p>}
+      </motion.button>
+      {formSuccess && (
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-green-600 text-center font-medium bg-green-50 p-3 rounded-xl border border-green-200"
+        >
+          Message sent successfully!
+        </motion.p>
+      )}
     </form>
   );
 }

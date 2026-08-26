@@ -62,7 +62,7 @@ export default function NewsPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen text-gray-900 text-xl">Loading news...</div>
+      <div className="flex justify-center items-center h-screen text-ink-900 text-xl">Loading news...</div>
     );
   }
 
@@ -73,67 +73,67 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
       <div className="mb-20 text-center">
         <h1 className="text-6xl font-bold uppercase tracking-tighter mb-4">The Feed</h1>
-        <p className="text-gray-600 text-xl">Updates from the workshop, local racing news, and gear reviews.</p>
+        <p className="text-ink-600 text-xl">Updates from the workshop, local racing news, and gear reviews.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-20">
           {newsPosts.length > 0 ? newsPosts.map(post => (
             <article key={post._id || post.id} className="group">
-              <div className="aspect-video rounded-lg overflow-hidden mb-8 border border-gray-300 relative">
+              <div className="aspect-video rounded-xl overflow-hidden mb-8 border border-ink-200 relative">
                 <img src={post.image} className="w-full h-full object-cover" alt={post.title} />
-                <div className="absolute top-6 left-6 bg-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                <div className="absolute top-6 left-6 bg-flame-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
                   Featured News
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-gray-600 mb-4">
-                <span className="text-orange-500">{post.date}</span>
-                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+              <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-ink-600 mb-4">
+                <span className="text-flame-500">{post.date}</span>
+                <span className="w-1 h-1 rounded-full bg-ink-300"></span>
                 <span>By {post.author}</span>
               </div>
-              <h2 className="text-4xl font-bold mb-6 group-hover:text-orange-500 leading-tight">
+              <h2 className="text-4xl font-bold mb-6 group-hover:text-flame-500 leading-tight">
                 {post.title}
               </h2>
-              <p className="text-gray-700 text-lg leading-relaxed mb-8">
+              <p className="text-ink-700 text-lg leading-relaxed mb-8">
                 {post.content} It's that time of year again when the trails dry out and the urge to ride becomes undeniable. Our team has been working around the clock...
               </p>
-              <button className="text-orange-500 font-bold uppercase tracking-widest text-sm hover:text-orange-600 inline-flex items-center gap-2">
+              <button className="text-flame-500 font-bold uppercase tracking-widest text-sm hover:text-flame-600 inline-flex items-center gap-2">
                 Continue Reading
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
               </button>
             </article>
           )) : (
-            <div className="text-center py-20 bg-white rounded-lg border border-gray-300">
-              <h2 className="text-2xl font-bold text-gray-600">No news posts found.</h2>
-              <p className="text-gray-700 mt-2">Check back later for updates!</p>
+            <div className="text-center py-20 bg-white rounded-xl border border-ink-200">
+              <h2 className="text-2xl font-bold text-ink-600">No news posts found.</h2>
+              <p className="text-ink-700 mt-2">Check back later for updates!</p>
             </div>
           )}
         </div>
 
         <aside className="space-y-12">
-          <div className="bg-gray-100 p-8 rounded-lg border border-gray-300">
+          <div className="bg-ink-100 p-8 rounded-xl border border-ink-200">
             <h3 className="text-xl font-bold mb-6 uppercase tracking-tight">Categories</h3>
             <ul className="space-y-4">
               {categories.length > 0 ? categories.map(cat => (
                 <li key={cat._id} className="flex justify-between items-center group cursor-pointer">
-                  <span className="text-gray-700 group-hover:text-gray-900">{cat.name}</span>
-                  <span className="text-[10px] font-bold text-gray-600 bg-gray-300 px-2 py-0.5 rounded">{cat.newsCount}</span>
+                  <span className="text-ink-700 group-hover:text-ink-900">{cat.name}</span>
+                  <span className="text-[10px] font-bold text-ink-600 bg-ink-300 px-2 py-0.5 rounded">{cat.newsCount}</span>
                 </li>
               )) : (
                 ['Tech Tips', 'Shop Updates', 'Race Results', 'Gear Reviews', 'Community Events'].map(cat => (
                   <li key={cat} className="flex justify-between items-center group cursor-pointer">
-                    <span className="text-gray-700 group-hover:text-gray-900">{cat}</span>
-                    <span className="text-[10px] font-bold text-gray-600 bg-gray-300 px-2 py-0.5 rounded">12</span>
+                    <span className="text-ink-700 group-hover:text-ink-900">{cat}</span>
+                    <span className="text-[10px] font-bold text-ink-600 bg-ink-300 px-2 py-0.5 rounded">12</span>
                   </li>
                 ))
               )}
             </ul>
           </div>
 
-          <form onSubmit={handleNewsletterSubscribe} className="bg-orange-500 p-8 rounded-lg relative overflow-hidden">
+          <form onSubmit={handleNewsletterSubscribe} className="bg-flame-500 p-8 rounded-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-10">
                <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
             </div>
@@ -144,9 +144,9 @@ export default function NewsPage() {
               placeholder="Your Email" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/20 border border-white/30 rounded-lg px-4 py-3 placeholder:text-white/70 mb-4 focus:outline-none" 
+              className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 placeholder:text-white/70 mb-4 focus:outline-none" 
             />
-            <button type="submit" className="w-full py-4 bg-white text-orange-500 font-bold rounded-lg hover:bg-gray-100">Subscribe</button>
+            <button type="submit" className="w-full py-4 bg-white text-flame-500 font-bold rounded-xl hover:bg-ink-100">Subscribe</button>
           </form>
         </aside>
       </div>

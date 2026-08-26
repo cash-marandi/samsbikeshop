@@ -120,36 +120,36 @@ export default function MyBookingsPage() {
       case 'cancelled':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-ink-100 text-gray-800';
     }
   };
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-flame-500"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold uppercase tracking-tighter">My Bookings</h1>
-        <Link href="/user-profile" className="text-orange-600 hover:text-orange-700">
+        <Link href="/user-profile" className="text-flame-600 hover:text-flame-700">
           ← Back to Profile
         </Link>
       </div>
 
-      <div className="mb-6 border-b border-gray-200">
+      <div className="mb-6 border-b border-ink-200">
         <nav className="flex -mb-px">
           <button
             className={`py-4 px-6 text-sm font-medium border-b-2 ${
               activeTab === 'rentals'
-                ? 'border-orange-500 text-orange-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                ? 'border-flame-500 text-flame-600'
+                : 'border-transparent text-ink-500 hover:text-ink-700'
             }`}
             onClick={() => setActiveTab('rentals')}
           >
@@ -158,8 +158,8 @@ export default function MyBookingsPage() {
           <button
             className={`py-4 px-6 text-sm font-medium border-b-2 ${
               activeTab === 'repairs'
-                ? 'border-orange-500 text-orange-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                ? 'border-flame-500 text-flame-600'
+                : 'border-transparent text-ink-500 hover:text-ink-700'
             }`}
             onClick={() => setActiveTab('repairs')}
           >
@@ -171,35 +171,35 @@ export default function MyBookingsPage() {
       {activeTab === 'rentals' && (
         <div className="space-y-6">
           {rentalBookings.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-lg border border-gray-300">
-              <p className="text-xl text-gray-700 mb-4">No rental bookings yet</p>
-              <Link href="/rentals" className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors">
+            <div className="text-center py-20 bg-white rounded-lg border border-ink-200">
+              <p className="text-xl text-ink-700 mb-4">No rental bookings yet</p>
+              <Link href="/rentals" className="px-6 py-3 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-lg transition-colors">
                 Browse Rentals
               </Link>
             </div>
           ) : (
             rentalBookings.map((booking) => (
-              <div key={booking._id} className="bg-white rounded-lg shadow border border-gray-300 p-6">
+              <div key={booking._id} className="bg-white rounded-lg shadow border border-ink-200 p-6">
                 <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                   <div className="flex items-center gap-4">
                     {booking.rentalBikeId?.image && (
                       <img src={booking.rentalBikeId.image} alt={booking.rentalBikeId.name} className="w-20 h-20 object-cover rounded-lg" />
                     )}
                     <div>
-                      <p className="font-mono text-sm text-gray-500">{booking.referenceNumber}</p>
+                      <p className="font-mono text-sm text-ink-500">{booking.referenceNumber}</p>
                       <h3 className="text-lg font-bold">{booking.rentalBikeId?.name || 'Bike Rental'}</h3>
-                      <p className="text-sm text-gray-600">{booking.rentalBikeId?.type}</p>
+                      <p className="text-sm text-ink-600">{booking.rentalBikeId?.type}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(booking.status)}`}>
                       {booking.status}
                     </span>
-                    <p className="text-xl font-bold text-orange-600 mt-2">R{booking.totalPrice}</p>
+                    <p className="text-xl font-bold text-flame-600 mt-2">R{booking.totalPrice}</p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-6 text-sm text-gray-600 mb-4">
+                <div className="flex flex-wrap gap-6 text-sm text-ink-600 mb-4">
                   <div>
                     <span className="font-medium">From:</span>{' '}
                     {new Date(booking.startDate).toLocaleDateString()}
@@ -217,7 +217,7 @@ export default function MyBookingsPage() {
                 ) : booking.paymentStatus === 'PENDING_PAYMENT' ? (
                   <button
                     onClick={() => setSelectedBooking(booking)}
-                    className="w-full mt-4 px-4 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors"
+                    className="w-full mt-4 px-4 py-3 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-lg transition-colors"
                   >
                     Upload Payment Proof
                   </button>
@@ -231,30 +231,30 @@ export default function MyBookingsPage() {
       {activeTab === 'repairs' && (
         <div className="space-y-6">
           {repairBookings.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-lg border border-gray-300">
-              <p className="text-xl text-gray-700 mb-4">No repair bookings yet</p>
-              <Link href="/repairs" className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors">
+            <div className="text-center py-20 bg-white rounded-lg border border-ink-200">
+              <p className="text-xl text-ink-700 mb-4">No repair bookings yet</p>
+              <Link href="/repairs" className="px-6 py-3 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-lg transition-colors">
                 Book a Service
               </Link>
             </div>
           ) : (
             repairBookings.map((booking) => (
-              <div key={booking._id} className="bg-white rounded-lg shadow border border-gray-300 p-6">
+              <div key={booking._id} className="bg-white rounded-lg shadow border border-ink-200 p-6">
                 <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                   <div>
-                    <p className="font-mono text-sm text-gray-500">{booking.referenceNumber}</p>
+                    <p className="font-mono text-sm text-ink-500">{booking.referenceNumber}</p>
                     <h3 className="text-lg font-bold">{booking.packageName}</h3>
-                    <p className="text-sm text-gray-600">{booking.serviceType}</p>
+                    <p className="text-sm text-ink-600">{booking.serviceType}</p>
                   </div>
                   <div className="text-right">
                     <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(booking.status)}`}>
                       {booking.status.replace(/_/g, ' ')}
                     </span>
-                    <p className="text-xl font-bold text-orange-600 mt-2">R{booking.price}</p>
+                    <p className="text-xl font-bold text-flame-600 mt-2">R{booking.price}</p>
                   </div>
                 </div>
 
-                <div className="text-sm text-gray-600 mb-4">
+                <div className="text-sm text-ink-600 mb-4">
                   <span className="font-medium">Booked:</span>{' '}
                   {new Date(booking.createdAt).toLocaleDateString()}
                 </div>
@@ -266,7 +266,7 @@ export default function MyBookingsPage() {
                 ) : booking.paymentStatus === 'PENDING_PAYMENT' ? (
                   <button
                     onClick={() => setSelectedBooking(booking)}
-                    className="w-full mt-4 px-4 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors"
+                    className="w-full mt-4 px-4 py-3 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-lg transition-colors"
                   >
                     Upload Payment Proof
                   </button>
@@ -281,7 +281,7 @@ export default function MyBookingsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <h2 className="text-2xl font-bold mb-2">Upload Payment Proof</h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-ink-600 mb-4">
               Reference: <span className="font-mono font-semibold">{selectedBooking.referenceNumber}</span>
             </p>
 
@@ -302,7 +302,7 @@ export default function MyBookingsPage() {
 
             <form onSubmit={(e) => handlePaymentUpload(e, activeTab === 'rentals' ? 'rental' : 'repair')}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-ink-700 mb-1">
                   Upload Proof of Payment
                 </label>
                 <input
@@ -310,7 +310,7 @@ export default function MyBookingsPage() {
                   name="paymentProof"
                   accept="image/*,.pdf"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-flame-500"
                 />
               </div>
 
@@ -318,14 +318,14 @@ export default function MyBookingsPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedBooking(null)}
-                  className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-ink-200 hover:bg-ink-300 text-ink-900 font-bold rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50"
                 >
                   {uploading ? 'Uploading...' : 'Submit'}
                 </button>

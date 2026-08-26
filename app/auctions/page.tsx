@@ -1,15 +1,23 @@
 'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react'; // 'update' removed from here
+import { useSession } from 'next-auth/react';
 import { Auction, AuctionCategory } from '../types';
 import AuctionCountdown from '../admin-dashboard/AuctionCountdown';
 import AuctionFilters from './components/AuctionFilters';
 import AuctionGrid from './components/AuctionGrid';
 import { useCart } from '@/app/context/CartContext';
 import { useSocket } from '@/app/context/SocketContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatedSection, StaggerContainer, StaggerItem } from '../components/AnimatedSection';
 
-// Assume a Toast/Notification component exists or needs to be created
-// For simplicity, we'll use a basic alert for now.
+// Icons
+const ClockIcon = ({ className = "w-12 h-12" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+
 export default function AuctionsPage() {
   const { data: session, update: updateSession } = useSession();
   const { showToast } = useCart();
@@ -19,9 +27,7 @@ export default function AuctionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [bidAmounts, setBidAmounts] = useState<{ [key: string]: string }>({});
   const [userWatchlist, setUserWatchlist] = useState<string[]>([]);
-  const [maxBidStates, setMaxBidStates] = useState<{ [key: string]: { enabled: boolean; amount: string } }>(
-    {}
-  ); // New state for max bid
+  const [maxBidStates, setMaxBidStates] = useState<{ [key: string]: { enabled: boolean; amount: string } }>({});
 
   // New states for filtering and sorting
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -30,7 +36,6 @@ export default function AuctionsPage() {
 
   useEffect(() => {
     if (session?.user?.watchlist) {
-      // Ensure the watchlist items are strings (IDs) for comparison
       setUserWatchlist(session.user.watchlist.map((auc: any) => auc.id || auc.toString()));
     }
   }, [session?.user?.watchlist]);
@@ -40,7 +45,7 @@ export default function AuctionsPage() {
     if (now < startTime) return 'UPCOMING';
     if (now > endTime) return 'ENDED';
     return 'LIVE';
-  }, []); // Empty dependency array as it doesn't depend on any props or state
+  }, []);
 
   const fetchAuctions = useCallback(async () => {
     setLoading(true);
@@ -66,10 +71,10 @@ export default function AuctionsPage() {
         const endTime = new Date(auc.endTime).getTime();
         return {
           ...auc,
-          id: auc._id?.toString() || auc.id, // Ensure _id is mapped to id, handle both cases
+          id: auc._id?.toString() || auc.id,
           status: getAuctionStatus(startTime, endTime),
-          startTime: startTime,
-          endTime: endTime,
+          startTime,
+          endTime,
         };
       });
       setAuctions(newAuctions);
@@ -96,12 +101,10 @@ export default function AuctionsPage() {
   useEffect(() => {
     if (!socket) return;
 
-    // Join rooms for all currently fetched auctions
     auctions.forEach(auction => {
       socket.emit('joinAuctionRoom', auction.id);
     });
 
-    // Listen for bid updates
     const handleBidUpdate = (updatedAuction: Auction) => {
       setAuctions(prevAuctions =>
         prevAuctions.map(auc =>
@@ -116,7 +119,6 @@ export default function AuctionsPage() {
 
     socket.on('bidUpdated', handleBidUpdate);
 
-    // Cleanup function: leave rooms and remove listener when component unmounts or auctions change
     return () => {
       auctions.forEach(auction => {
         socket.emit('leaveAuctionRoom', auction.id);
@@ -124,8 +126,6 @@ export default function AuctionsPage() {
       socket.off('bidUpdated', handleBidUpdate);
     };
   }, [socket, auctions, setAuctions, setBidAmounts]);
-
-
 
   const handleToggleWatchlist = useCallback(async (auctionId: string) => {
     if (!session?.user) {
@@ -153,12 +153,12 @@ export default function AuctionsPage() {
       await updateSession();
       
     } catch (err: any) {
-showToast(err.message);
+      showToast(err.message);
       setUserWatchlist(prev => 
         isOnWatchlist ? [...prev, auctionId] : prev.filter(id => id !== auctionId)
       );
     }
-  }, [session?.user, userWatchlist, updateSession]);
+  }, [session?.user, userWatchlist, updateSession, showToast]);
 
   const handleAuctionEnd = (auctionId: string) => {
     setAuctions(prevAuctions =>
@@ -182,7 +182,7 @@ showToast(err.message);
   const handleMaxBidToggle = (auctionId: string, enabled: boolean) => {
     setMaxBidStates(prev => ({
       ...prev,
-      [auctionId]: { ...prev[auctionId], enabled: enabled }
+      [auctionId]: { ...prev[auctionId], enabled }
     }));
   };
 
@@ -190,10 +190,10 @@ showToast(err.message);
     const auction = auctions.find(a => a.id === auctionId);
     const bidAmount = Number(bidAmounts[auctionId]);
     if (auction) {
-        const minBid = auction.currentBid + auction.minIncrement;
-        if (isNaN(bidAmount) || bidAmount < minBid) {
-            setBidAmounts(prev => ({ ...prev, [auctionId]: minBid.toString() }));
-        }
+      const minBid = auction.currentBid + auction.minIncrement;
+      if (isNaN(bidAmount) || bidAmount < minBid) {
+        setBidAmounts(prev => ({ ...prev, [auctionId]: minBid.toString() }));
+      }
     }
   };
 
@@ -207,9 +207,9 @@ showToast(err.message);
     
     const minBid = auction.currentBid + auction.minIncrement;
     if (!auctionId || !amount || amount < minBid) {
-        showToast(`Your bid must be at least R${minBid}.`);
-        setBidAmounts(prev => ({...prev, [auctionId]: minBid.toString()}));
-        return;
+      showToast(`Your bid must be at least R${minBid}.`);
+      setBidAmounts(prev => ({...prev, [auctionId]: minBid.toString()}));
+      return;
     }
 
     try {
@@ -230,7 +230,7 @@ showToast(err.message);
 
       const updatedAuction = {
         ...result,
-        id: result._id?.toString() || result.id, // Ensure _id is mapped to id, handle both cases
+        id: result._id?.toString() || result.id,
         status: getAuctionStatus(new Date(result.startTime).getTime(), new Date(result.endTime).getTime())
       };
       
@@ -243,45 +243,80 @@ showToast(err.message);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen text-gray-900 text-xl">Loading Auctions...</div>
+      <div className="min-h-screen bg-ink-50 pt-32 pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="h-8 bg-ink-200 rounded-lg w-64 mb-8 animate-pulse" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-ink-200/50 animate-pulse">
+                <div className="h-64 bg-ink-200" />
+                <div className="p-6 space-y-3">
+                  <div className="h-4 bg-ink-200 rounded w-3/4" />
+                  <div className="h-3 bg-ink-200 rounded w-full" />
+                  <div className="h-8 bg-ink-200 rounded w-1/3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen text-red-500 text-xl">Error: {error}</div>
+      <div className="min-h-screen bg-ink-50 flex items-center justify-center pt-32">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-ink-900 mb-2">Something went wrong</h2>
+          <p className="text-ink-500">{error}</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-16">
-        <h1 className="text-4xl font-bold uppercase tracking-tighter">Live Auctions</h1>
-        <p className="text-gray-600 mt-2">Bid on exclusive frames, rare components, and collector bikes.</p>
+    <div className="min-h-screen bg-ink-50 pt-28 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <AnimatedSection>
+          <div className="mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 border border-green-200 rounded-full mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-green-600">Live Bidding</span>
+            </div>
+            <h1 className="font-display text-4xl lg:text-5xl font-bold text-ink-900 tracking-tight">Live Auctions</h1>
+            <p className="text-ink-500 mt-2">Bid on exclusive frames, rare components, and collector bikes.</p>
+          </div>
+        </AnimatedSection>
+
+        <AuctionFilters
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+
+        <AuctionGrid
+          auctions={auctions}
+          bidAmounts={bidAmounts}
+          userWatchlist={userWatchlist}
+          maxBidStates={maxBidStates}
+          handleToggleWatchlist={handleToggleWatchlist}
+          handleAuctionEnd={handleAuctionEnd}
+          handleBidChange={handleBidChange}
+          handleBidBlur={handleBidBlur}
+          handlePlaceBid={handlePlaceBid}
+          handleMaxBidChange={handleMaxBidChange}
+          handleMaxBidToggle={handleMaxBidToggle}
+        />
       </div>
-
-      <AuctionFilters
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-
-      <AuctionGrid
-        auctions={auctions}
-        bidAmounts={bidAmounts}
-        userWatchlist={userWatchlist}
-        maxBidStates={maxBidStates}
-        handleToggleWatchlist={handleToggleWatchlist}
-        handleAuctionEnd={handleAuctionEnd}
-        handleBidChange={handleBidChange}
-        handleBidBlur={handleBidBlur}
-        handlePlaceBid={handlePlaceBid}
-        handleMaxBidChange={handleMaxBidChange}
-        handleMaxBidToggle={handleMaxBidToggle}
-      />
     </div>
   );
-};
+}

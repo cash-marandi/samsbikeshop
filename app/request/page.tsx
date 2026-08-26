@@ -68,19 +68,19 @@ export default function RequestPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-4xl font-bold uppercase tracking-tighter mb-8">Request a Bike or Part</h1>
-      <p className="text-gray-700 mb-8">
+      <p className="text-ink-700 mb-8">
         Can't find what you're looking for? Let us know! Fill out the form below with details about the bike or part
         you need, and we'll do our best to source it for you.
       </p>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 border border-gray-300 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 border border-ink-200 space-y-6">
         <div>
-          <label htmlFor="requestType" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="requestType" className="block text-sm font-medium text-ink-700 mb-2">
             Request Type
           </label>
           <select
             id="requestType"
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+            className="w-full px-4 py-2 bg-white border border-ink-200 rounded-lg focus:outline-none focus:border-flame-500"
             value={requestType}
             onChange={(e) => setRequestType(e.target.value as RequestType)}
             required
@@ -94,13 +94,13 @@ export default function RequestPage() {
         </div>
 
         <div>
-          <label htmlFor="details" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="details" className="block text-sm font-medium text-ink-700 mb-2">
             Details (e.g., brand, model, size, color, condition)
           </label>
           <textarea
             id="details"
             rows={6}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+            className="w-full px-4 py-2 bg-white border border-ink-200 rounded-lg focus:outline-none focus:border-flame-500"
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             placeholder="Tell us what you're looking for..."
@@ -109,13 +109,13 @@ export default function RequestPage() {
         </div>
 
         <div>
-          <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="budget" className="block text-sm font-medium text-ink-700 mb-2">
             Your Budget (Optional)
           </label>
           <input
             type="number"
             id="budget"
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+            className="w-full px-4 py-2 bg-white border border-ink-200 rounded-lg focus:outline-none focus:border-flame-500"
             value={budget}
             onChange={(e) => setBudget(e.target.value === '' ? '' : Number(e.target.value))}
             placeholder="e.g., 5000"
@@ -125,7 +125,7 @@ export default function RequestPage() {
 
         <button
           type="submit"
-          className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg disabled:opacity-50"
+          className="w-full px-6 py-3 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-lg disabled:opacity-50"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Submitting...' : 'Submit Request'}

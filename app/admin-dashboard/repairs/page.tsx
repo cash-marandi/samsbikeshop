@@ -110,7 +110,7 @@ export default function RepairBookingsManagement() {
   }
 
   return (
-    <div className="p-6">
+    <div className="pt-24 pb-6 px-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Repair Bookings Management</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">

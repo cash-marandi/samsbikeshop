@@ -1,4 +1,3 @@
-
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -9,71 +8,69 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Roboto', 'system-ui', 'sans-serif'],
+        display: ['var(--font-oswald)', 'system-ui', 'sans-serif'],
+        body: ['var(--font-geist)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'monospace'],
       },
       colors: {
-        // Flat Design Color Palette
-        white: '#FFFFFF',
-        black: '#000000',
-        gray: {
-          50: '#FAFAFA',
-          100: '#F5F5F5',
-          200: '#E5E5E5',
-          300: '#D4D4D4',
-          400: '#A3A3A3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
+        // Premium dark palette
+        ink: {
+          50: '#FAFAF9',
+          100: '#F5F5F4',
+          200: '#E7E5E4',
+          300: '#D6D3D1',
+          400: '#A8A29E',
+          500: '#78716C',
+          600: '#57534E',
+          700: '#44403C',
+          800: '#292524',
+          900: '#1C1917',
+          950: '#0C0A09',
         },
-        // Army Orange Accent Colors
-        orange: {
+        // Premium orange accent
+        flame: {
           50: '#FFF7ED',
           100: '#FFEDD5',
           200: '#FED7AA',
           300: '#FDBA74',
           400: '#FB923C',
-          500: '#F97316', // Primary Army Orange
-          600: '#EA580C', // Darker Army Orange
+          500: '#F97316',
+          600: '#EA580C',
           700: '#C2410C',
           800: '#9A3412',
           900: '#7C2D12',
         },
-        // Additional flat accent colors
-        blue: {
-          50: '#EFF6FF',
-          500: '#3B82F6',
-          600: '#2563EB',
+        // Supporting palette
+        gold: {
+          500: '#CA8A04',
+          600: '#A16207',
         },
-        green: {
-          50: '#F0FDF4',
-          500: '#22C55E',
-          600: '#16A34A',
-        },
-        red: {
-          50: '#FEF2F2',
-          500: '#EF4444',
-          600: '#DC2626',
-        },
+        success: '#10B981',
+        warning: '#F59E0B',
+        error: '#EF4444',
+        info: '#3B82F6',
       },
       boxShadow: {
-        // Remove all shadows for flat design
-        none: 'none',
+        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.08)',
+        'medium': '0 8px 30px -4px rgba(0, 0, 0, 0.12)',
+        'large': '0 16px 50px -8px rgba(0, 0, 0, 0.15)',
+        'glow': '0 0 40px -10px rgba(249, 115, 22, 0.3)',
+        'glow-lg': '0 0 60px -15px rgba(249, 115, 22, 0.4)',
       },
       borderRadius: {
-        // Simpler borders for flat design
-        none: '0',
-        sm: '0.125rem',
-        DEFAULT: '0.25rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-        xl: '0.75rem',
+        'xl': '1rem',
+        '2xl': '1.5rem',
+        '3xl': '2rem',
       },
       animation: {
-        // Simplified animations for flat design
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
+        'fade-in': 'fadeIn 0.5s ease-out forwards',
+        'slide-up': 'slideUp 0.6s ease-out forwards',
+        'slide-down': 'slideDown 0.4s ease-out forwards',
+        'scale-in': 'scaleIn 0.3s ease-out forwards',
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-slow': 'pulse 3s ease-in-out infinite',
+        'spin-slow': 'spin 8s linear infinite',
+        'shimmer': 'shimmer 2s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -81,9 +78,29 @@ const config: Config = {
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '0%': { transform: 'translateY(30px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
+        slideDown: {
+          '0%': { transform: 'translateY(-20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      transitionTimingFunction: {
+        'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
       },
     },
   },

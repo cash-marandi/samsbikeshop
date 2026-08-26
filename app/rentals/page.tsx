@@ -135,49 +135,49 @@ function BookingModal({ bike, bookedDates, onClose, onSuccess }: BookingModalPro
   if (bookingResult) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
           <div className="text-center mb-6">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Booking Created!</h2>
-            <p className="text-gray-600 mt-2">Please complete payment to confirm your rental</p>
+            <h2 className="text-2xl font-bold text-ink-900">Booking Created!</h2>
+            <p className="text-ink-600 mt-2">Please complete payment to confirm your rental</p>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 mb-4">
-            <p className="text-sm text-gray-600">Reference Number</p>
-            <p className="text-2xl font-bold text-orange-600 font-mono">{bookingResult.referenceNumber}</p>
+          <div className="bg-ink-50 rounded-xl p-4 mb-4">
+            <p className="text-sm text-ink-600">Reference Number</p>
+            <p className="text-2xl font-bold text-flame-600 font-mono">{bookingResult.referenceNumber}</p>
           </div>
 
-          <div className="bg-blue-50 rounded-lg p-4 mb-4 border border-blue-200">
+          <div className="bg-blue-50 rounded-xl p-4 mb-4 border border-blue-200">
             <h3 className="font-bold text-blue-800 mb-3">Banking Details for EFT Payment</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-700">Account Holder:</span>
+                <span className="text-ink-700">Account Holder:</span>
                 <span className="font-medium">Sams Bike Shop and Mobile</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Bank:</span>
+                <span className="text-ink-700">Bank:</span>
                 <span className="font-medium">Capitec</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Account Type:</span>
+                <span className="text-ink-700">Account Type:</span>
                 <span className="font-medium">Capitec Business</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Account Number:</span>
+                <span className="text-ink-700">Account Number:</span>
                 <span className="font-medium font-mono">1054960860</span>
               </div>
               <div className="flex justify-between border-t border-blue-200 pt-2 mt-2">
-                <span className="text-gray-700">Amount Due:</span>
+                <span className="text-ink-700">Amount Due:</span>
                 <span className="font-bold text-xl text-green-600">R{bookingResult.totalPrice}</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-yellow-50 rounded-lg p-4 mb-4 border border-yellow-200">
+          <div className="bg-yellow-50 rounded-xl p-4 mb-4 border border-yellow-200">
             <p className="text-sm text-yellow-700">
               <strong>Important:</strong> Use <span className="font-mono font-bold">{bookingResult.referenceNumber}</span> as your payment reference
             </p>
@@ -185,13 +185,13 @@ function BookingModal({ bike, bookedDates, onClose, onSuccess }: BookingModalPro
 
           <form onSubmit={handlePaymentUpload} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Upload Proof of Payment</label>
+              <label className="block text-sm font-medium text-ink-700 mb-1">Upload Proof of Payment</label>
               <input
                 type="file"
                 name="paymentProof"
                 accept="image/*,.pdf"
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500"
               />
             </div>
 
@@ -201,14 +201,14 @@ function BookingModal({ bike, bookedDates, onClose, onSuccess }: BookingModalPro
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 bg-ink-200 hover:bg-ink-300 text-ink-900 font-bold rounded-xl transition-colors"
               >
                 Pay Later
               </button>
               <button
                 type="submit"
                 disabled={uploading}
-                className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-xl transition-colors disabled:opacity-50"
               >
                 {uploading ? 'Uploading...' : 'Submit Payment Proof'}
               </button>
@@ -221,92 +221,92 @@ function BookingModal({ bike, bookedDates, onClose, onSuccess }: BookingModalPro
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-2">Book: {bike.name}</h2>
-        <p className="text-gray-600 mb-4">R{bike.pricePerDay} per day</p>
+        <p className="text-ink-600 mb-4">R{bike.pricePerDay} per day</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+              <label className="block text-sm font-medium text-ink-700 mb-1">Start Date</label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 min={today}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+              <label className="block text-sm font-medium text-ink-700 mb-1">End Date</label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 min={startDate || today}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500"
               />
             </div>
           </div>
 
           {startDate && endDate && (
-            <div className="bg-orange-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-600">
+            <div className="bg-flame-50 p-4 rounded-xl">
+              <p className="text-sm text-ink-600">
                 Duration: {Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1} day(s)
               </p>
-              <p className="text-xl font-bold text-orange-600">Total: R{calculateTotal()}</p>
+              <p className="text-xl font-bold text-flame-600">Total: R{calculateTotal()}</p>
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-ink-700 mb-1">Full Name</label>
             <input
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-ink-700 mb-1">Email</label>
             <input
               type="email"
               value={customerEmail}
               onChange={(e) => setCustomerEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <label className="block text-sm font-medium text-ink-700 mb-1">Phone Number</label>
             <input
               type="tel"
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
               required
               placeholder="+27..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+            <label className="block text-sm font-medium text-ink-700 mb-1">Notes (Optional)</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
               placeholder="Any special requests..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500"
             ></textarea>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
+            <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm">
               {error}
             </div>
           )}
@@ -315,14 +315,14 @@ function BookingModal({ bike, bookedDates, onClose, onSuccess }: BookingModalPro
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold rounded-lg transition-colors"
+              className="flex-1 px-4 py-2 bg-ink-200 hover:bg-ink-300 text-ink-900 font-bold rounded-xl transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-xl transition-colors disabled:opacity-50"
             >
               {submitting ? 'Booking...' : 'Book Now'}
             </button>
@@ -396,11 +396,11 @@ function BookingCalendar({ bike, bookedDates, onSelectDates }: {
   const days = getDaysInMonth(currentMonth);
 
   return (
-    <div className="bg-white rounded-lg p-4 border border-gray-300">
+    <div className="bg-white rounded-xl p-4 border border-ink-200">
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-          className="p-2 hover:bg-gray-100 rounded"
+          className="p-2 hover:bg-ink-100 rounded"
         >
           ←
         </button>
@@ -409,7 +409,7 @@ function BookingCalendar({ bike, bookedDates, onSelectDates }: {
         </h3>
         <button
           onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-          className="p-2 hover:bg-gray-100 rounded"
+          className="p-2 hover:bg-ink-100 rounded"
         >
           →
         </button>
@@ -417,7 +417,7 @@ function BookingCalendar({ bike, bookedDates, onSelectDates }: {
 
       <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold mb-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="p-2 text-gray-500">{day}</div>
+          <div key={day} className="p-2 text-ink-500">{day}</div>
         ))}
       </div>
 
@@ -431,12 +431,12 @@ function BookingCalendar({ bike, bookedDates, onSelectDates }: {
               key={idx}
               className={`p-2 text-center text-sm rounded ${
                 !day.isCurrentMonth 
-                  ? 'text-gray-300' 
+                  ? 'text-ink-300' 
                   : past 
-                    ? 'text-gray-300'
+                    ? 'text-ink-300'
                     : booked 
                       ? 'bg-red-100 text-red-600'
-                      : 'bg-green-50 text-gray-900 hover:bg-green-100 cursor-pointer'
+                      : 'bg-green-50 text-ink-900 hover:bg-green-100 cursor-pointer'
               }`}
               onClick={() => {
                 if (day.isCurrentMonth && !past && !booked) {
@@ -463,7 +463,7 @@ function BookingCalendar({ bike, bookedDates, onSelectDates }: {
 
       <button
         onClick={onSelectDates}
-        className="w-full mt-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors"
+        className="w-full mt-4 py-2 bg-flame-500 hover:bg-flame-600 text-white font-bold rounded-xl transition-colors"
       >
         Book This Bike
       </button>
@@ -524,7 +524,7 @@ export default function RentalsPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen text-gray-900 text-xl">Loading rental bikes...</div>
+      <div className="flex justify-center items-center h-screen text-ink-900 text-xl">Loading rental bikes...</div>
     );
   }
 
@@ -535,52 +535,52 @@ export default function RentalsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
       <div className="mb-16">
         <h1 className="text-4xl font-bold uppercase tracking-tighter">Premium Rentals</h1>
-        <p className="text-gray-600 mt-2">Professional-grade bicycles for every journey. Check availability and book online.</p>
+        <p className="text-ink-600 mt-2">Professional-grade bicycles for every journey. Check availability and book online.</p>
       </div>
 
       {rentalBikes.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {rentalBikes.map(bike => (
-            <div key={bike._id || bike.id} className="bg-white rounded-lg overflow-hidden border border-gray-300 flex flex-col md:flex-row">
+            <div key={bike._id || bike.id} className="bg-white rounded-xl overflow-hidden border border-ink-200 flex flex-col md:flex-row">
               <div className="md:w-1/2 h-64 md:h-auto">
-                <img src={bike.image} className="w-full h-full object-cover" alt={bike.name} />
+                {bike.image ? <img src={bike.image} className="w-full h-full object-cover" alt={bike.name} /> : <div className="w-full h-full bg-ink-100 flex items-center justify-center text-ink-400">No Image</div>}
               </div>
               <div className="p-8 md:w-1/2 flex flex-col justify-between">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <span className="text-orange-500 text-xs font-bold uppercase tracking-widest">{bike.type}</span>
+                      <span className="text-flame-500 text-xs font-bold uppercase tracking-widest">{bike.type}</span>
                       <h3 className="text-2xl font-bold mt-1">{bike.name}</h3>
                     </div>
                     <div className="text-right">
-                      <span className="block text-gray-600 text-[10px] uppercase font-bold">Daily Rate</span>
-                      <span className="text-2xl font-bold text-gray-900">R{bike.pricePerDay}</span>
+                      <span className="block text-ink-600 text-[10px] uppercase font-bold">Daily Rate</span>
+                      <span className="text-2xl font-bold text-ink-900">R{bike.pricePerDay}</span>
                     </div>
                   </div>
-                  <ul className="space-y-2 text-sm text-gray-700 mb-8">
+                  <ul className="space-y-2 text-sm text-ink-700 mb-8">
                     <li className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
+                      <svg className="w-4 h-4 text-flame-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
                       Inspected & Cleaned
                     </li>
                     <li className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
+                      <svg className="w-4 h-4 text-flame-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
                       Helmet Included
                     </li>
                     <li className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
+                      <svg className="w-4 h-4 text-flame-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
                       Emergency Road Kit
                     </li>
                   </ul>
                 </div>
                 <button 
                   onClick={() => handleSelectBike(bike)}
-                  className={`w-full py-4 font-bold rounded-lg uppercase tracking-widest text-sm ${
+                  className={`w-full py-4 font-bold rounded-xl uppercase tracking-widest text-sm ${
                     bike.isAvailable 
-                      ? 'bg-orange-500 hover:bg-orange-600 text-white' 
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      ? 'bg-flame-500 hover:bg-flame-600 text-white' 
+                      : 'bg-ink-300 text-ink-500 cursor-not-allowed'
                   }`} 
                   disabled={!bike.isAvailable}
                 >
@@ -591,25 +591,25 @@ export default function RentalsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-lg border border-gray-300">
-          <h2 className="text-2xl font-bold text-gray-600">No rental bikes available at the moment.</h2>
-          <p className="text-gray-700 mt-2">Please check back later!</p>
+        <div className="text-center py-20 bg-white rounded-xl border border-ink-200">
+          <h2 className="text-2xl font-bold text-ink-600">No rental bikes available at the moment.</h2>
+          <p className="text-ink-700 mt-2">Please check back later!</p>
         </div>
       )}
 
-      <div className="mt-24 p-12 rounded-lg bg-gray-100 border border-gray-300 text-center">
+      <div className="mt-24 p-12 rounded-xl bg-ink-100 border border-ink-200 text-center">
         <h2 className="text-3xl font-bold mb-6">Group & Long-term Rentals</h2>
-        <p className="text-gray-700 max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p className="text-ink-700 max-w-2xl mx-auto mb-10 leading-relaxed">
           Planning a charity ride or corporate event? We offer specialized packages for groups of 5 or more with delivery options directly to your trail-head.
         </p>
-        <button className="px-10 py-4 border border-orange-500 hover:bg-orange-500 hover:text-white text-orange-500 font-bold rounded-lg">
+        <button className="px-10 py-4 border border-flame-500 hover:bg-flame-500 hover:text-white text-flame-500 font-bold rounded-xl">
           Get a Custom Quote
         </button>
       </div>
 
       {selectedBike && showCalendar && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">{selectedBike.name}</h2>
               <button
@@ -617,7 +617,7 @@ export default function RentalsPage() {
                   setShowCalendar(false);
                   setSelectedBike(null);
                 }}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                className="text-ink-500 hover:text-ink-700 text-2xl"
               >
                 ×
               </button>
@@ -633,7 +633,7 @@ export default function RentalsPage() {
               onClick={() => {
                 setShowCalendar(false);
               }}
-              className="w-full mt-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold rounded-lg transition-colors"
+              className="w-full mt-4 py-2 bg-ink-200 hover:bg-ink-300 text-ink-900 font-bold rounded-xl transition-colors"
             >
               Close
             </button>

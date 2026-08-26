@@ -36,7 +36,7 @@ export default function AuctionCard({
   return (
     <div key={auction.id} className="grid grid-cols-1 lg:grid-cols-12 gap-1 bg-white border border-gray-300 rounded-lg overflow-hidden">
       <div className="lg:col-span-5 h-80 lg:h-auto relative">
-        <img src={auction.image} className="w-full h-full object-cover" alt={auction.name} />
+        {auction.image ? <img src={auction.image} className="w-full h-full object-cover" alt={auction.name} /> : <div className="w-full h-full bg-ink-100 flex items-center justify-center text-ink-400">No Image</div>}
         <div className={`absolute top-6 left-6 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${auction.status === 'LIVE' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-600'}`}>
           {auction.status === 'LIVE' && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
           {auction.status === 'LIVE' ? 'ACTIVE' : auction.status}

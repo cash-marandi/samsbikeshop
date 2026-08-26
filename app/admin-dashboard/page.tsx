@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 flex pt-20">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
         <div className="flex flex-col h-full">

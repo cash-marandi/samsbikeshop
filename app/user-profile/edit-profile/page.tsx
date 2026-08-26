@@ -59,28 +59,28 @@ export default function EditProfilePage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-zinc-500">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-ink-500">
         Loading profile editor...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-ink-50">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8">
         <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Edit Profile</h1>
+          <div className="px-6 py-4 border-b border-ink-200">
+            <h1 className="text-2xl font-bold text-ink-900">Edit Profile</h1>
           </div>
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-ink-700 mb-2">
                 Name
               </label>
               <input
                 type="text"
                 id="name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 placeholder-gray-500"
+                className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-flame-500 focus:border-flame-500 text-ink-900 placeholder-ink-500"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={loading}
@@ -88,13 +88,13 @@ export default function EditProfilePage() {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-ink-700 mb-2">
                 Email
               </label>
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 placeholder-gray-500"
+                className="w-full px-4 py-2 bg-ink-50 border border-ink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-flame-500 focus:border-flame-500 text-ink-900 placeholder-ink-500"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
@@ -108,7 +108,7 @@ export default function EditProfilePage() {
             <div className="flex justify-end space-x-4 pt-4">
               <button
                 type="button"
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                className="px-6 py-2 border border-ink-200 rounded-lg text-ink-700 hover:bg-ink-50 font-medium transition-colors"
                 onClick={() => router.back()}
                 disabled={loading}
               >
@@ -116,7 +116,7 @@ export default function EditProfilePage() {
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
+                className="px-6 py-2 bg-flame-500 hover:bg-flame-600 text-white font-medium rounded-lg disabled:opacity-50 transition-colors"
                 disabled={loading}
               >
                 {loading ? 'Saving...' : 'Save Changes'}
