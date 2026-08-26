@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { useCart } from '@/app/context/CartContext';
 import { useSession } from 'next-auth/react';
 
@@ -80,7 +81,7 @@ export default function ProductPageContent({ product: initialProduct, reviews: i
         {[...Array(5)].map((_, i) => (
           <svg
             key={i}
-            className={`h-5 w-5 ${i < rating ? 'fill-current' : 'text-gray-400'}`}
+            className={`h-5 w-5 ${i < rating ? 'fill-current' : 'text-ink-300'}`}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -93,60 +94,71 @@ export default function ProductPageContent({ product: initialProduct, reviews: i
   };
 
   if (!product) {
-    return <div className="flex justify-center items-center h-screen text-xl">Product not found</div>;
+    return (
+      <div className="flex justify-center items-center h-screen text-xl text-ink-500">
+        Product not found
+      </div>
+    );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
+      <Link href="/shop" className="inline-flex items-center gap-2 text-flame-500 font-bold uppercase tracking-widest text-sm hover:text-flame-600 mb-8">
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to Shop
+      </Link>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
-          <img src={product.image} alt={product.name} className="w-full h-auto rounded-lg shadow-lg" />
+          <div className="rounded-2xl overflow-hidden border border-ink-200 bg-ink-100">
+            <img src={product.image} alt={product.name} className="w-full h-auto" />
+          </div>
         </div>
         <div>
-          <h1 className="text-3xl font-black uppercase tracking-tighter mb-2">{product.name}</h1>
-          <p className="text-lg text-zinc-400 mb-4">{product.brand}</p>
+          <h1 className="text-3xl font-display font-bold text-ink-900 mb-2">{product.name}</h1>
+          <p className="text-lg text-ink-500 mb-4">{product.brand}</p>
           <div className="flex items-center space-x-2 mb-4">
             {product.averageRating && renderStars(product.averageRating)}
             {product.reviewCount !== undefined && product.reviewCount > 0 && (
-              <span className="text-zinc-400 text-sm">({product.reviewCount} reviews)</span>
+              <span className="text-ink-500 text-sm">({product.reviewCount} reviews)</span>
             )}
-             {product.reviewCount === 0 && (
-              <span className="text-zinc-500 text-sm">No reviews yet</span>
+            {product.reviewCount === 0 && (
+              <span className="text-ink-400 text-sm">No reviews yet</span>
             )}
           </div>
-          <p className="text-2xl font-bold text-blue-500 mb-6">R{product.price}</p>
-          <p className="text-zinc-300 mb-8">{product.description}</p>
-          
+          <p className="text-2xl font-display font-bold text-flame-500 mb-6">R{product.price}</p>
+          <p className="text-ink-600 mb-8 leading-relaxed">{product.description}</p>
+
           {!product.isSold ? (
-            <button 
+            <button
               onClick={() => addItem(product)}
-              className="w-full px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all transform hover:-translate-y-1"
+              className="w-full px-8 py-4 bg-flame-500 hover:bg-flame-600 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-glow transition-all"
             >
               Add to Cart
             </button>
           ) : (
-            <div className="w-full px-8 py-4 bg-zinc-800 text-zinc-500 font-bold rounded-lg text-center">
+            <div className="w-full px-8 py-4 bg-ink-200 text-ink-500 font-bold text-sm uppercase tracking-wider rounded-xl text-center">
               Sold Out
             </div>
           )}
         </div>
       </div>
 
-      <div className="mt-16 border-t border-zinc-800 pt-8">
-        <h2 className="text-3xl font-black uppercase tracking-tighter mb-6">Customer Reviews</h2>
+      <div className="mt-16 border-t border-ink-200 pt-8">
+        <h2 className="text-3xl font-display font-bold text-ink-900 mb-6">Customer Reviews</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {session?.user && !hasUserReviewed ? (
-            <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-800">
-              <h3 className="text-xl font-bold mb-4">Write a Review</h3>
+            <div className="bg-white rounded-2xl p-6 border border-ink-200 shadow-soft">
+              <h3 className="text-xl font-display font-bold text-ink-900 mb-4">Write a Review</h3>
               <form onSubmit={handleSubmitReview} className="space-y-4">
                 <div>
-                  <label htmlFor="rating" className="block text-sm font-medium text-zinc-400 mb-2">Your Rating</label>
+                  <label htmlFor="rating" className="block text-sm font-semibold text-ink-700 mb-2">Your Rating</label>
                   <div className="flex space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <svg
                         key={star}
-                        className={`h-8 w-8 cursor-pointer ${newReviewRating >= star ? 'text-yellow-400 fill-current' : 'text-gray-400'}`}
+                        className={`h-8 w-8 cursor-pointer ${newReviewRating >= star ? 'text-yellow-400 fill-current' : 'text-ink-300'}`}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -158,11 +170,11 @@ export default function ProductPageContent({ product: initialProduct, reviews: i
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="comment" className="block text-sm font-medium text-zinc-400 mb-2">Your Comment</label>
+                  <label htmlFor="comment" className="block text-sm font-semibold text-ink-700 mb-2">Your Comment</label>
                   <textarea
                     id="comment"
                     rows={4}
-                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-ink-50 border border-ink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-flame-500 focus:border-transparent text-ink-900"
                     value={newReviewComment}
                     onChange={(e) => setNewReviewComment(e.target.value)}
                     required
@@ -170,7 +182,7 @@ export default function ProductPageContent({ product: initialProduct, reviews: i
                 </div>
                 <button
                   type="submit"
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md transition-colors disabled:opacity-50"
+                  className="w-full px-4 py-3 bg-flame-500 hover:bg-flame-600 text-white font-bold text-sm uppercase tracking-wider rounded-xl transition-colors disabled:opacity-50"
                   disabled={isSubmittingReview}
                 >
                   {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
@@ -178,11 +190,11 @@ export default function ProductPageContent({ product: initialProduct, reviews: i
               </form>
             </div>
           ) : session?.user && hasUserReviewed ? (
-            <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-800 text-zinc-400">
+            <div className="bg-white rounded-2xl p-6 border border-ink-200 text-ink-500">
               You have already reviewed this product.
             </div>
           ) : (
-            <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-800 text-zinc-400">
+            <div className="bg-white rounded-2xl p-6 border border-ink-200 text-ink-500">
               Please log in to write a review.
             </div>
           )}
@@ -190,17 +202,17 @@ export default function ProductPageContent({ product: initialProduct, reviews: i
           <div className="space-y-6">
             {reviews.length > 0 ? (
               reviews.map(review => (
-                <div key={review._id} className="bg-zinc-900 rounded-lg p-6 border border-zinc-800">
+                <div key={review._id} className="bg-white rounded-2xl p-6 border border-ink-200 shadow-soft">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="font-bold">{review.userName}</p>
-                    <span className="text-zinc-500 text-sm">{new Date(review.createdAt).toLocaleDateString()}</span>
+                    <p className="font-bold text-ink-900">{review.userName}</p>
+                    <span className="text-ink-400 text-sm">{new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                   </div>
                   {renderStars(review.rating)}
-                  <p className="mt-2 text-zinc-300">{review.comment}</p>
+                  <p className="mt-2 text-ink-600">{review.comment}</p>
                 </div>
               ))
             ) : (
-              <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-800 text-zinc-400">
+              <div className="bg-white rounded-2xl p-6 border border-ink-200 text-ink-400">
                 No reviews yet.
               </div>
             )}
